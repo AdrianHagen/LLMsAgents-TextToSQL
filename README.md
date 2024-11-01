@@ -7,6 +7,7 @@ This project uses poetry for dependency management, so make sure you have it ins
 1. Install necessary dependencies by running `poetry install`
 2. Download and verify downloading of the BIRD dataset by executing the `setup.py` script in the setup folder. In case this does not work you can also download the data from [this link](https://bird-bench.github.io/) (use the Dev Set).
 
+The test_bird.py file in the setup folder is called from within the setup.py script and contains sample code to establish a connection to the sqlite databases and execute queries against them.
 
 Paper:
 
