@@ -34,4 +34,4 @@ os.remove(DOWNLOADED_ZIP_PATH)
 os.remove(DATABASES_ZIP_PATH)
 
 # Run the test script to verify the dataset
-subprocess.run(["python", "setup/test_bird.py"], check=True)
+subprocess.run(["python3", "setup/test_bird.py"], check=True)
