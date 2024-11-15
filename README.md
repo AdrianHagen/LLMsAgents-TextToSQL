@@ -8,6 +8,6 @@ The test_bird.py file in the setup folder is called from within the setup.py scr
 
 Paper:
 
-- https://arxiv.org/abs/2402.16347
-- https://arxiv.org/abs/2305.03111
-- https://arxiv.org/abs/2410.01943
+- CodeS: https://arxiv.org/abs/2402.16347
+- Bird: https://arxiv.org/abs/2305.03111
+- ChaseSQL: https://arxiv.org/abs/2410.01943
