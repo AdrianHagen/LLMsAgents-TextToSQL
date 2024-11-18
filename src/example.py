@@ -1,5 +1,5 @@
 from bird_data_loader import BirdDataLoader
-from approach_evaluator import Appraoch_Evaluator
+from approach_evaluator import Approach_Evaluator
 
 bird_data_loader = BirdDataLoader("data/dev/dev.json")
 
@@ -12,7 +12,7 @@ def nl_to_sql(nl_input: str):
     return nl_input.capitalize()
 
 
-approach_evaluator = Appraoch_Evaluator(
+approach_evaluator = Approach_Evaluator(
     nl_to_sql, bird_data_loader.get_questions(), bird_data_loader.get_target_sqls()
 )
 
