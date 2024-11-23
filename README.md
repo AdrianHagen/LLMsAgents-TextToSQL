@@ -1,6 +1,8 @@
 # LLMsAgents-TextToSQL
 Repository for an agent-based system that converts natural language queries to SQL
 
+![Architecture](./documents/LLM%20and%20Agents.png)
+
 ## IMPORTANT: Document everything using LangSmith
 
 ### Setup
