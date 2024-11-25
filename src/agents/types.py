@@ -9,6 +9,12 @@ class FeedbackResponse(TypedDict):
     updated_query: str
 
 
+class FixerResponse(TypedDict):
+    error_message: str
+    specific_error: str
+    advise: str
+
+
 class State(TypedDict):
     messages: Annotated[list, add_messages]
     relevant_database: str
