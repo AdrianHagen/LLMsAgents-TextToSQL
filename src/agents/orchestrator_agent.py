@@ -2,25 +2,13 @@ from typing import Annotated, List
 
 from typing_extensions import TypedDict
 
-from feedback_agent import FeedbackResponse
-
+from agents.types import State
 from langgraph.graph import StateGraph, START, END
-from langgraph.graph.message import add_messages
 from langchain_openai import OpenAI
 import os
 import pandas as pd
 import json
 import sqlfluff
-
-
-class State(TypedDict):
-    messages: Annotated[list, add_messages]
-    relevant_database: str
-    relevant_tables: list
-    descriptions: str
-    original_question: str
-    feedbacks: List[FeedbackResponse]
-    errors: list
 
 
 graph_builder = StateGraph(State)
