@@ -5,7 +5,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.language_models.chat_models import BaseChatModel
 from typing_extensions import TypedDict
 
-from agents.types import FixerResponse, State
+from state_types import FixerResponse, State
 from tools.database import Database
 import templates.fixer_agent as templates
 
