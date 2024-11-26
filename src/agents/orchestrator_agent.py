@@ -4,12 +4,14 @@ from langchain_openai import OpenAI
 import os
 import pandas as pd
 import json
-import sqlfluff
+import chardet
 from dotenv import load_dotenv
-from fixer_agent import FixerAgent
 from feedback_agent import FeedbackAgent
-
-from creator_agent import generate_sql_query_creator
+import prompt_templates.select_relevant_database as select_relevant_database_templates
+import prompt_templates.select_relevant_tables as select_relevant_tables_templates
+from langchain.prompts import PromptTemplate
+from langchain_core.runnables import RunnableConfig
+from creator_agent import create_sql_query_creator
 
 load_dotenv()
 
@@ -40,16 +42,27 @@ def retrieve_table_descriptions(database_name: str, tables: list):
     descriptions_path = os.path.join(
         os.getenv("DB_DIRECTORY"), database_name, "database_description"
     )
+
     for table_name in tables:
         file_path = os.path.join(descriptions_path, f"{table_name}.csv")
         if os.path.exists(file_path):
-            table_data = pd.read_csv(file_path, encoding="utf-8-sig")
-            columns = table_data[["original_column_name", "column_description"]]
-            table_descriptions[table_name] = []
-            for column in columns.itertuples():
-                table_descriptions[table_name].append(
-                    f"{column.original_column_name}: {column.column_description}"
+            # Detect encoding dynamically
+            with open(file_path, "rb") as file:
+                result = chardet.detect(file.read())
+                detected_encoding = (
+                    result["encoding"] if result["encoding"] else "utf-8"
                 )
+
+            # Use the detected encoding to read the file
+            table_data = pd.read_csv(file_path, encoding=detected_encoding)
+
+            # Extract column descriptions
+            columns = table_data[["original_column_name", "column_description"]]
+            table_descriptions[table_name] = [
+                f"{column.original_column_name}: {column.column_description}"
+                for column in columns.itertuples()
+            ]
+
     return table_descriptions
 
 
@@ -57,7 +70,7 @@ def initialize_state(state: State):
     state["relevant_database"] = ""
     state["relevant_tables"] = {}
     state["original_question"] = state["messages"][0].content
-    state["query"] = ""
+    state["generated_sql_queries"] = []
     state["feedbacks"] = []
     state["errors"] = []
     state["final_query"] = None
@@ -66,12 +79,18 @@ def initialize_state(state: State):
 
 def select_relevant_database(state: State):
     databases = retrieve_database_names().split(", ")
-    original_question = state["original_question"]
 
-    prompt = f"Given the query: '{original_question}', which of the following databases is most relevant? Your answer must contain only the name of the database and nothing else! {', '.join(databases)}"
+    prompt = PromptTemplate.from_template(select_relevant_database_templates.ZERO_SHOT)
+    prompt = prompt.invoke(
+        {
+            "original_question": state["original_question"],
+            "databases": databases,
+            "feedback_trace": json.dumps(state["feedbacks"]),
+        }
+    )
     response = llm.invoke(prompt)
 
-    state["relevant_database"] = response.strip()
+    state["relevant_database"] = response.strip().lower()
     for table_name in retrieve_table_names(state["relevant_database"]):
         state["relevant_tables"][table_name] = {}
     return state
@@ -82,73 +101,30 @@ def select_relevant_tables(state: State):
     tables = list(state["relevant_tables"].keys())
     original_question = state["original_question"]
 
-    prompt = f"""You are a database assistant responsible for selecting the relevant tables for a given natural language query.
-            As input, you will receive the following information:
-
-            {{
-                "original_question": "The question that the SQL query is supposed to answer.",
-                "tables": "A list of tables you are supposed to choose from."
-            }}
-
-
-            -------------------------------------------------------------------------------
-
-            Here's the process you will follow:
-            You will look at the list of tables and the query and determine which tables may be relevant for the query.
-
-            Output Format is the following JSON document:
-
-            {{
-                "tables": ["The tables you think will be relevant for the query."]
-            }}
-
-            Your response must only consist of the following:
-            tables: The tables you think are necessary for the query.
-
-            Ensure that your output is a valid JSON and uses double quotes for strings.
-            Your output should not contain any additional information other than the tables you think are relevant in the specified format.
-            You must ensure that this is the case.
-
-            -------------------------------------------------------------------------------
-
-            Example Input:
-            {{
-                "original_question": "What is the surname of the driver with the best lap time in race number 19 in the second qualifying period?",
-                "tables": ["circuits", "status", "drivers", "driverStandings", "races", "constructors", "constructorResults", "lapTimes", "qualifying", "pitStops", "seasons", "constructorStandings", "results"]
-            }}
-
-            Example Output:
-            {{
-                "tables": ["drivers", "qualifying"]
-            }}
-
-            Another Example Output:
-            {{
-                "tables": ["drivers", "driverStandings", "races", "results"]
-            }}
-
-            As you can see, none of the example outputs actually contain the word output so you must also not include it in your response.
-
-            -------------------------------------------------------------------------------
-
-            Input:
-
-            {{
-                "original_question": "{original_question}",
-                "tables": {json.dumps(tables)}
-            }}
-    """
-    response = llm.invoke(prompt)
-    response = response.replace("Output:", "").strip()
+    prompt = PromptTemplate.from_template(select_relevant_tables_templates.TWO_SHOT)
+    prompt = prompt.invoke(
+        {
+            "original_question": original_question,
+            "tables": tables,
+            "feedback_trace": json.dumps(state["feedbacks"]),
+        }
+    )
+    raw_response = llm.invoke(prompt)
+    # Sometimes the LLM starts the response with some extra text, so we remove it
+    processed_response = raw_response[raw_response.find("{") :].strip()
 
     try:
         # Parse the JSON response
-        response_json = json.loads(response)
+        response_json = json.loads(processed_response)
         relevant_tables = response_json.get("tables", [])
         # Set the elements in the tables part of the JSON as the keys of the state["relevant_tables"] dict
         state["relevant_tables"] = {table: "" for table in relevant_tables}
     except json.JSONDecodeError as e:
-        print(f"Failed to decode JSON response: {e}, Response: {response}")
+        print(
+            f"""Orchestrator Agent: Failed to decode JSON response: {e}, 
+            raw Response: {raw_response}, 
+            processed Response: {processed_response}"""
+        )
         state["relevant_tables"] = {}
 
     return state
@@ -161,23 +137,12 @@ def get_table_descriptions(state: State):
     return state
 
 
-def generate_sql_query(state: State):
-    return generate_sql_query_creator(state)
+def create_sql_query(state: State):
+    return create_sql_query_creator(state)
 
 
 def validate_sql_query(state: State):
-    try:
-        sqlfluff.parse(state["sql_query"])
-        return True
-    except Exception as e:
-        state["errors"].append(str(e))
-        return False
-
-
-def fix_sql_query(state: State):
-    fixer_agent = FixerAgent(llm=llm)
-    fixer_agent.analyse_incorrect_query(state)
-    return state
+    return state["feedbacks"][-1]["is_correct"]
 
 
 def feedback_sql_query(state: State):
@@ -187,7 +152,7 @@ def feedback_sql_query(state: State):
 
 
 def final_result(state: State):
-    state["final_query"] = state["sql_query"]
+    state["final_query"] = state["generated_sql_queries"][-1]
     return state
 
 
@@ -195,22 +160,16 @@ graph_builder.add_node("initialize_state", initialize_state)
 graph_builder.add_node("select_relevant_database", select_relevant_database)
 graph_builder.add_node("select_relevant_tables", select_relevant_tables)
 graph_builder.add_node("get_table_descriptions", get_table_descriptions)
-graph_builder.add_node("generate_sql_query", generate_sql_query)
-graph_builder.add_node("fixer_agent", fix_sql_query)
-graph_builder.add_node("feedback_agent", fix_sql_query)
+graph_builder.add_node("creator_agent", create_sql_query)
+graph_builder.add_node("feedback_agent", feedback_sql_query)
 graph_builder.add_node("final_result", final_result)
 
 graph_builder.add_edge(START, "initialize_state")
 graph_builder.add_edge("initialize_state", "select_relevant_database")
 graph_builder.add_edge("select_relevant_database", "select_relevant_tables")
 graph_builder.add_edge("select_relevant_tables", "get_table_descriptions")
-graph_builder.add_edge("get_table_descriptions", "generate_sql_query")
-graph_builder.add_conditional_edges(
-    "generate_sql_query",
-    validate_sql_query,
-    {True: "feedback_agent", False: "fixer_agent"},
-)
-graph_builder.add_edge("fixer_agent", "select_relevant_database")
+graph_builder.add_edge("get_table_descriptions", "creator_agent")
+graph_builder.add_edge("creator_agent", "feedback_agent")
 graph_builder.add_conditional_edges(
     "feedback_agent",
     validate_sql_query,
@@ -251,13 +210,41 @@ def stream_graph_updates(user_input: str):
         print(formatted_output)
 
 
-def create_sql_from_natural_text(natural_text: str):
-    for event in graph.stream({"messages": [("user", natural_text)]}):
-        for _, value in event.items():
-            for sub_key, sub_value in value.items():
-                if sub_key == "final_query" and sub_value:
-                    return sub_value
-    return "Final Query was not generated"
+def create_sql_from_natural_text(natural_text: str, max_iterations: int = 20):
+    """
+    Converts natural language text into an SQL query.
+
+    This function takes a natural language input string and processes it through a graph stream to generate an SQL query.
+    It listens for events in the graph stream and extracts the final SQL query and the relevant database from the event data.
+
+    Args:
+        natural_text (str): The natural language text to be converted into an SQL query.
+
+    Returns:
+        tuple: A tuple containing the generated SQL query (str) and the relevant database (str).
+               If the final query is not generated, it returns ("Final Query was not generated", "").
+    """
+    iteration_count = 0
+
+    try:
+        for event in graph.stream({"messages": [("user", natural_text)]}):
+            iteration_count += 1
+            if iteration_count > max_iterations:
+                print("Stopping condition reached: Maximum iterations exceeded")
+                for _, value in event.items():
+                    for sub_key, sub_value in value.items():
+                        if sub_key == "generated_sql_queries":
+                            return sub_value[-1], value["relevant_database"]
+
+            for _, value in event.items():
+                for sub_key, sub_value in value.items():
+                    if sub_key == "final_query" and sub_value:
+                        return sub_value, value["relevant_database"]
+    except Exception as e:
+        print(f"Orchestrator Agent: An error occurred: {e}")
+        return "", ""
+
+    return "Final Query was not generated", ""
 
 
 if __name__ == "__main__":

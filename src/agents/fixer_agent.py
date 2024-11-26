@@ -54,9 +54,10 @@ class FixerAgent:
         )
 
         response = self.llm.invoke(p)
+        response = response.replace("Output:", "").strip()
 
         try:
-            return json.loads(response.content)
+            return json.loads(response)
         except Exception as e:
-            print(f"JSON Parser failed : {e}")
+            print(f"Fixer Agent: JSON Parser failed : {e}")
             return None
