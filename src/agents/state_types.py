@@ -18,10 +18,10 @@ class FixerResponse(TypedDict):
 class State(TypedDict):
     messages: Annotated[list, add_messages]
     relevant_database: str
-    relevant_tables: list
+    relevant_tables: dict
     descriptions: str
     original_question: str
-    sql_query: str
+    generated_sql_queries: list
     feedbacks: List[FeedbackResponse]
     errors: list
     final_query: str

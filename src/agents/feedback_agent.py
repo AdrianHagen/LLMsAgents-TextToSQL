@@ -7,7 +7,7 @@ from typing_extensions import TypedDict
 
 from state_types import FeedbackResponse, State
 from tools.database import Database
-import templates.feedback_agent as templates
+import prompt_templates.feedback_agent as templates
 
 
 class FeedbackAgent:
@@ -15,7 +15,7 @@ class FeedbackAgent:
     def __init__(self, llm: BaseChatModel = None, template: str = None) -> None:
 
         if template is None:
-            self.template = templates.ONE_SHOT
+            self.template = templates.TWO_SHOT
         else:
             self.template = template
         self.prompt = PromptTemplate.from_template(self.template)
@@ -26,17 +26,22 @@ class FeedbackAgent:
 
     def evaluate_query(self, state: State):
         original_question = state["original_question"]
-        database = state["database"]
-        generated_sql_query = state["generated_sql_queries"]
+        database = state["relevant_database"]
+        generated_sql_query = state["generated_sql_queries"][-1]
 
-        response = self.evaluate_query(original_question, database, generated_sql_query)
+        response = self.__evaluate_query(
+            original_question, database, generated_sql_query
+        )
 
         if response is not None:
+            print(f"Feedback agent: {response}")
+            print(f"Feedback agent: Query: {generated_sql_query}")
+            print(f"Feedback agent: Orignal Question: {original_question}")
             state["feedbacks"].append(response)
         else:
             state["errors"].append("Feedback Failed")
 
-    def evaluate_query(
+    def __evaluate_query(
         self, original_question: str, database: str, generated_sql_query: str
     ) -> FeedbackResponse | None:
         try:
@@ -64,8 +69,9 @@ class FeedbackAgent:
         )
 
         response = self.llm.invoke(p)
+        response = response.replace("Output:", "").strip()
         try:
-            return json.loads(response.content)
-        except Exception(e):
+            return json.loads(response)
+        except Exception as e:
             print(f"JSON Parser failed : {e}")
             return None

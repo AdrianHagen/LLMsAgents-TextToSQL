@@ -85,14 +85,14 @@ class ApproachEvaluator:
 
         evaluation_function = method_map[evaluation_method]
 
-        for idx, input_text in enumerate(self.input_texts):
-            predicted_query = self.approach(input_text)
-            accuracy = evaluation_function(predicted_query, self.target_queries[idx])
+        for input_text, target_query in zip(self.input_texts, self.target_queries):
+            predicted_query, database = self.approach(input_text)
+            accuracy = evaluation_function(database, predicted_query, target_query)
             self.accuracies.append(accuracy)
 
         return np.mean(self.accuracies)
 
-    def exact_matching(self, predicted: str, target: str) -> int:
+    def exact_matching(self, database: str, predicted: str, target: str) -> int:
         """
         Compares two queries for exact (case-insensitive) matches.
 
@@ -117,7 +117,7 @@ class ApproachEvaluator:
         """
         return sqlparse.format(query, reindent=True, keyword_case="upper")
 
-    def compare_tokenized(self, query1: str, query2: str) -> float:
+    def compare_tokenized(self, database: str, query1: str, query2: str) -> float:
         """
         Compares two SQL queries based on tokenized similarity.
 
@@ -133,23 +133,29 @@ class ApproachEvaluator:
         similarity = SequenceMatcher(None, normalized_query1, normalized_query2).ratio()
         return similarity
 
-    def compare_query_results(self, query1: str, query2: str) -> bool:
+    def compare_query_results(
+        self, database: str, predicted_query: str, target_query: str
+    ) -> bool:
         """
         Compares the results of two SQL queries.
 
         Args:
-            query1 (str): The first SQL query.
-            query2 (str): The second SQL query.
+            predicted_query (str): The predicted SQL query.
+            query2 (str): The target SQL query.
 
         Returns:
             bool: A boolean value indicating whether the query results are the same.
         """
         db = Database("example.db")
         try:
-            results1 = db.execute_query(query1)
-            results2 = db.execute_query(query2)
-            print(f"Results 1: {results1}, Results 2: {results2}")
-            return results1 == results2
+            predicted_result = db.execute_query(predicted_query)
+            target_result = db.execute_query(target_query)
+            print(
+                f"Predicted result: {predicted_result}, Target result: {target_result}"
+            )
+            return predicted_result == target_result
         except Exception as e:
             print(f"Error comparing query results: {e}")
+            print(f"Target query: {target_query}")
+            print(f"Predicted query: {predicted_query}")
             return False
