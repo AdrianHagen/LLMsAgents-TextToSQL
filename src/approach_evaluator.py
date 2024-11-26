@@ -2,6 +2,7 @@ from typing import Callable, List
 import numpy as np
 import sqlparse
 from difflib import SequenceMatcher
+from tools.database import Database
 
 
 class ApproachEvaluator:
@@ -56,7 +57,7 @@ class ApproachEvaluator:
         self.target_queries = target_queries
         self.accuracies = []
 
-    def evaluate(self, evaluation_method: str = "exact_matching") -> float:
+    def evaluate(self, evaluation_method: str = "compare_query_results") -> float:
         """
         Evaluates the approach using the specified evaluation method.
 
@@ -65,6 +66,7 @@ class ApproachEvaluator:
                 The method to use for evaluation. Options are:
                 - "exact_matching": Checks for exact matches between predicted and target queries.
                 - "compare_queries": Compares queries using tokenized similarity.
+                - "compare_query_results": Compares the results of the queries.
 
         Returns:
             float: The average accuracy or similarity score across all inputs.
@@ -75,6 +77,7 @@ class ApproachEvaluator:
         method_map = {
             "exact_matching": self.exact_matching,
             "compare_tokenized": self.compare_tokenized,
+            "compare_query_results": self.compare_query_results,
         }
 
         if evaluation_method not in method_map:
@@ -129,3 +132,24 @@ class ApproachEvaluator:
         normalized_query2 = self._normalize_sql(query2)
         similarity = SequenceMatcher(None, normalized_query1, normalized_query2).ratio()
         return similarity
+
+    def compare_query_results(self, query1: str, query2: str) -> bool:
+        """
+        Compares the results of two SQL queries.
+
+        Args:
+            query1 (str): The first SQL query.
+            query2 (str): The second SQL query.
+
+        Returns:
+            bool: A boolean value indicating whether the query results are the same.
+        """
+        db = Database("example.db")
+        try:
+            results1 = db.execute_query(query1)
+            results2 = db.execute_query(query2)
+            print(f"Results 1: {results1}, Results 2: {results2}")
+            return results1 == results2
+        except Exception as e:
+            print(f"Error comparing query results: {e}")
+            return False

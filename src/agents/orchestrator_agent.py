@@ -1,7 +1,3 @@
-from typing import Annotated, List
-
-from typing_extensions import TypedDict
-
 from state_types import State
 from langgraph.graph import StateGraph, START, END
 from langchain_openai import OpenAI
@@ -10,6 +6,8 @@ import pandas as pd
 import json
 import sqlfluff
 from dotenv import load_dotenv
+from fixer_agent import FixerAgent
+from feedback_agent import FeedbackAgent
 
 from creator_agent import generate_sql_query_creator
 
@@ -28,7 +26,7 @@ def retrieve_database_names():
 def retrieve_table_names(database_name: str):
     table_names = []
     tables_path = os.path.join(
-        "data/dev/dev_databases", database_name, "database_description"
+        os.getenv("DB_DIRECTORY"), database_name, "database_description"
     )
     for _, _, files in os.walk(tables_path):
         for file in files:
@@ -38,7 +36,6 @@ def retrieve_table_names(database_name: str):
 
 
 def retrieve_table_descriptions(database_name: str, tables: list):
-    print(f"tablesabc: {tables}")
     table_descriptions = {}
     descriptions_path = os.path.join(
         os.getenv("DB_DIRECTORY"), database_name, "database_description"
@@ -46,23 +43,14 @@ def retrieve_table_descriptions(database_name: str, tables: list):
     for table_name in tables:
         file_path = os.path.join(descriptions_path, f"{table_name}.csv")
         if os.path.exists(file_path):
-            table_data = pd.read_csv(file_path, encoding="ISO-8859-1")
+            table_data = pd.read_csv(file_path, encoding="utf-8-sig")
             columns = table_data[["original_column_name", "column_description"]]
             table_descriptions[table_name] = []
             for column in columns.itertuples():
                 table_descriptions[table_name].append(
                     f"{column.original_column_name}: {column.column_description}"
                 )
-    print(f"table_descriptions: {table_descriptions}")
     return table_descriptions
-
-
-def check_query_syntax(query: str) -> str:
-    try:
-        parsed = sqlfluff.parse(query)
-        return "SQL is syntactically correct!"
-    except Exception as e:
-        return f"SQL syntax error: {e}"
 
 
 def initialize_state(state: State):
@@ -72,6 +60,7 @@ def initialize_state(state: State):
     state["query"] = ""
     state["feedbacks"] = []
     state["errors"] = []
+    state["final_query"] = None
     return state
 
 
@@ -156,7 +145,6 @@ def select_relevant_tables(state: State):
         # Parse the JSON response
         response_json = json.loads(response)
         relevant_tables = response_json.get("tables", [])
-
         # Set the elements in the tables part of the JSON as the keys of the state["relevant_tables"] dict
         state["relevant_tables"] = {table: "" for table in relevant_tables}
     except json.JSONDecodeError as e:
@@ -178,11 +166,28 @@ def generate_sql_query(state: State):
 
 
 def validate_sql_query(state: State):
-    # state["query"] = check_query_syntax(state["query"])
+    try:
+        sqlfluff.parse(state["sql_query"])
+        return True
+    except Exception as e:
+        state["errors"].append(str(e))
+        return False
+
+
+def fix_sql_query(state: State):
+    fixer_agent = FixerAgent(llm=llm)
+    fixer_agent.analyse_incorrect_query(state)
+    return state
+
+
+def feedback_sql_query(state: State):
+    feedback_agent = FeedbackAgent(llm=llm)
+    feedback_agent.evaluate_query(state)
     return state
 
 
 def final_result(state: State):
+    state["final_query"] = state["sql_query"]
     return state
 
 
@@ -191,7 +196,8 @@ graph_builder.add_node("select_relevant_database", select_relevant_database)
 graph_builder.add_node("select_relevant_tables", select_relevant_tables)
 graph_builder.add_node("get_table_descriptions", get_table_descriptions)
 graph_builder.add_node("generate_sql_query", generate_sql_query)
-graph_builder.add_node("validate_sql_query", validate_sql_query)
+graph_builder.add_node("fixer_agent", fix_sql_query)
+graph_builder.add_node("feedback_agent", fix_sql_query)
 graph_builder.add_node("final_result", final_result)
 
 graph_builder.add_edge(START, "initialize_state")
@@ -199,11 +205,32 @@ graph_builder.add_edge("initialize_state", "select_relevant_database")
 graph_builder.add_edge("select_relevant_database", "select_relevant_tables")
 graph_builder.add_edge("select_relevant_tables", "get_table_descriptions")
 graph_builder.add_edge("get_table_descriptions", "generate_sql_query")
-graph_builder.add_edge("generate_sql_query", "validate_sql_query")
-graph_builder.add_edge("validate_sql_query", "final_result")
+graph_builder.add_conditional_edges(
+    "generate_sql_query",
+    validate_sql_query,
+    {True: "feedback_agent", False: "fixer_agent"},
+)
+graph_builder.add_edge("fixer_agent", "select_relevant_database")
+graph_builder.add_conditional_edges(
+    "feedback_agent",
+    validate_sql_query,
+    {True: "final_result", False: "select_relevant_database"},
+)
 graph_builder.add_edge("final_result", END)
 
 graph = graph_builder.compile()
+
+
+def visualize_graph():
+    try:
+        # Get the PNG image bytes
+        png_bytes = graph.get_graph().draw_mermaid_png()
+
+        # Save to a file
+        with open("src/agents/workflow.png", "wb") as f:
+            f.write(png_bytes)
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 
 def format_event_output(event):
@@ -222,6 +249,15 @@ def stream_graph_updates(user_input: str):
     for event in graph.stream({"messages": [("user", user_input)]}):
         formatted_output = format_event_output(event)
         print(formatted_output)
+
+
+def create_sql_from_natural_text(natural_text: str):
+    for event in graph.stream({"messages": [("user", natural_text)]}):
+        for _, value in event.items():
+            for sub_key, sub_value in value.items():
+                if sub_key == "final_query" and sub_value:
+                    return sub_value
+    return "Final Query was not generated"
 
 
 if __name__ == "__main__":

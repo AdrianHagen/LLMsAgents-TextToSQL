@@ -21,5 +21,7 @@ class State(TypedDict):
     relevant_tables: list
     descriptions: str
     original_question: str
+    sql_query: str
     feedbacks: List[FeedbackResponse]
     errors: list
+    final_query: str
