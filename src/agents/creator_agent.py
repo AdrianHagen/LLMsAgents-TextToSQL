@@ -1,8 +1,5 @@
 from langchain_openai import OpenAI
-from dotenv import load_dotenv
 import os
-
-load_dotenv()
 
 
 def generate_sql_query_creator(state: dict) -> str:
@@ -14,5 +11,5 @@ def generate_sql_query_creator(state: dict) -> str:
 
     llm = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     response = llm.invoke(prompt)
-    state["query"] = response
+    state["sql_query"] = response
     return state

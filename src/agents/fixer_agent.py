@@ -26,10 +26,10 @@ class FixerAgent:
 
     def analyse_incorrect_query(self, state: State):
         original_question = state["original_question"]
-        database = state["database"]
-        error_message = state["query_errors"][:-1]
+        database = state["relevant_database"]
+        error_message = state["errors"][:-1]
 
-        response = self.analyse_incorrect_query(
+        response = self._analyse_incorrect_query(
             original_question, database, error_message
         )
 
@@ -39,7 +39,7 @@ class FixerAgent:
             state["errors"].append("Feedback Failed")
 
     # TODO - Could include the original question
-    def analyse_incorrect_query(
+    def _analyse_incorrect_query(
         self, query: str, database: str, error_message: str
     ) -> FixerResponse | None:
 
@@ -55,9 +55,8 @@ class FixerAgent:
 
         response = self.llm.invoke(p)
 
-        print(response)
         try:
             return json.loads(response.content)
-        except Exception(e):
+        except Exception as e:
             print(f"JSON Parser failed : {e}")
             return None
