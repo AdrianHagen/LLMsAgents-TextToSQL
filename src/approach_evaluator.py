@@ -146,7 +146,7 @@ class ApproachEvaluator:
         Returns:
             bool: A boolean value indicating whether the query results are the same.
         """
-        db = Database("example.db")
+        db = Database(database)
         try:
             predicted_result = db.execute_query(predicted_query)
             target_result = db.execute_query(target_query)

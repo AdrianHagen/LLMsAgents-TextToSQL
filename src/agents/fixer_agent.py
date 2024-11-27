@@ -7,7 +7,7 @@ from typing_extensions import TypedDict
 
 from state_types import FixerResponse, State
 from tools.database import Database
-import templates.fixer_agent as templates
+import prompt_templates.fixer_agent as templates
 
 
 class FixerAgent:

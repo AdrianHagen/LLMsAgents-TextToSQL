@@ -6,7 +6,7 @@ ZERO_SHOT = """
         
         {{
             "original_question": "The natural language question that needs to be answered.",
-            "relevant_tables": "The tables that are relevant to the question.",
+            "relevant_tables": "A dictionary where keys are table names and values are lists of all columns in those tables.",
             "feedback_trace": "Feedback from previous attempts, if any."
         }}
 
@@ -16,7 +16,7 @@ ZERO_SHOT = """
 
         Steps to Perform:
         1. Analyze the original question to understand the information being requested.
-        2. Review the relevant tables to identify where the necessary data is stored.
+        2. Review the relevant tables and their columns to identify where the necessary data is stored.
         3. Consider any feedback to avoid repeating mistakes.
         4. Generate a correct SQL query using SQLite syntax that retrieves the required information from the relevant tables.
 
@@ -27,7 +27,7 @@ ZERO_SHOT = """
         - Be precise and thorough in your analysis.
         - Ensure that the SQL query is syntactically correct and optimized for performance.
         - Use the feedback from previous attempts to improve the accuracy of your query.
-        - You must only use the relevant tables provided to answer the question. Do not use any other table names. Using any table not listed in the relevant tables is not allowed.
+        - You must only use the relevant tables and their respective columns provided to answer the question. Do not use any other table names or columns not listed in the relevant tables.
 
         -------------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ ONE_SHOT = """
         
         {{
             "original_question": "The natural language question that needs to be answered.",
-            "relevant_tables": "The tables that are relevant to the question.",
+            "relevant_tables": "A dictionary where keys are table names and values are lists of all columns in those tables.",
             "feedback_trace": "Feedback from previous attempts, if any."
         }}
 
@@ -58,7 +58,7 @@ ONE_SHOT = """
 
         Steps to Perform:
         1. Analyze the original question to understand the information being requested.
-        2. Review the relevant tables to identify where the necessary data is stored.
+        2. Review the relevant tables and their columns to identify where the necessary data is stored.
         3. Consider any feedback to avoid repeating mistakes.
         4. Generate a correct SQL query using SQLite syntax that retrieves the required information from the relevant tables.
 
@@ -69,14 +69,14 @@ ONE_SHOT = """
         - Be precise and thorough in your analysis.
         - Ensure that the SQL query is syntactically correct and optimized for performance.
         - Use the feedback from previous attempts to improve the accuracy of your query.
-        - You must only use the relevant tables provided to answer the question. Do not use any other table names. Using any table not listed in the relevant tables is not allowed.
+        - You must only use the relevant tables and their respective columns provided to answer the question. Do not use any other table names or columns not listed in the relevant tables.
 
         -------------------------------------------------------------------------------
 
         Example Input with empty Feedback:
         {{
             "original_question": "What is the total revenue generated in 2023?",
-            "relevant_tables": ["sales"],
+            "relevant_tables": {{"sales": ["revenue", "year", "product_id", "quantity"]}},
             "feedback_trace": []
         }}
 
@@ -102,7 +102,7 @@ TWO_SHOT = """
         
         {{
             "original_question": "The natural language question that needs to be answered.",
-            "relevant_tables": "The tables that are relevant to the question.",
+            "relevant_tables": "A dictionary where keys are table names and values are lists of all columns in those tables.",
             "feedback_trace": "Feedback from previous attempts, if any."
         }}
 
@@ -112,7 +112,7 @@ TWO_SHOT = """
 
         Steps to Perform:
         1. Analyze the original question to understand the information being requested.
-        2. Review the relevant tables to identify where the necessary data is stored.
+        2. Review the relevant tables and their columns to identify where the necessary data is stored.
         3. Consider any feedback to avoid repeating mistakes.
         4. Generate a correct SQL query using SQLite syntax that retrieves the required information from the relevant tables.
 
@@ -123,14 +123,14 @@ TWO_SHOT = """
         - Be precise and thorough in your analysis.
         - Ensure that the SQL query is syntactically correct and optimized for performance.
         - Use the feedback from previous attempts to improve the accuracy of your query.
-        - You must only use the relevant tables provided to answer the question. Do not use any other table names. Using any table not listed in the relevant tables is not allowed.
+        - You must only use the relevant tables and their respective columns provided to answer the question. Do not use any other table names or columns not listed in the relevant tables.
 
         -------------------------------------------------------------------------------
 
         Example Input with empty Feedback:
         {{
             "original_question": "What is the total revenue generated in 2023?",
-            "relevant_tables": ["sales"],
+            "relevant_tables": {{"sales": ["revenue", "year", "product_id", "quantity"]}},
             "feedback_trace": []
         }}
 
@@ -142,7 +142,7 @@ TWO_SHOT = """
         Example Input with Feedback:
         {{
             "original_question": "What is the average household income in King County for 2021?",
-            "relevant_tables": ["income_data"],
+            "relevant_tables": {{"income_data": ["Household Income", "County", "Year", "Population"]}},
             "feedback_trace": {{'query_result': 'error', 'is_correct': False, 'feedback': 'Error executing query: near "Output": syntax error', 'updated_query': None}}
         }}
 
