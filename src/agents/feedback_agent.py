@@ -44,11 +44,9 @@ class FeedbackAgent:
         try:
             db = Database(database)
 
-            print(db.get_db_path())
-
             results = db.execute_query(generated_sql_query)
         except Exception as e:
-            print(f"Error executing query: {e}")
+            print(e)
             return {
                 "query_result": "error",
                 "is_correct": False,
