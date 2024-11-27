@@ -60,7 +60,7 @@ ONE_SHOT = """
                 "query_result": "123.456",
                 "is_correct": true,
                 "feedback": "No changes needed. The query is accurate",
-                "updated_query": null,
+                "updated_query": null
             }}
             
             -------------------------------------------------------------------------------
