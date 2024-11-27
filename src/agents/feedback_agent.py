@@ -29,7 +29,7 @@ class FeedbackAgent:
         database = state["relevant_database"]
         generated_sql_query = state["generated_sql_queries"][-1]
 
-        response = self.__evaluate_query(
+        response = self._evaluate_query(
             original_question, database, generated_sql_query
         )
 
@@ -38,7 +38,7 @@ class FeedbackAgent:
         else:
             state["errors"].append("Feedback Failed")
 
-    def __evaluate_query(
+    def _evaluate_query(
         self, original_question: str, database: str, generated_sql_query: str
     ) -> FeedbackResponse | None:
         try:
@@ -66,9 +66,8 @@ class FeedbackAgent:
         )
 
         response = self.llm.invoke(p)
-        response = response.replace("Output:", "").strip()
         try:
-            return json.loads(response)
+            return json.loads(response.content)
         except Exception as e:
             print(f"JSON Parser failed : {e}")
             return None
