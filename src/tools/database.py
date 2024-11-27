@@ -24,12 +24,16 @@ class Database:
         self.path = self.get_db_path()
         self.connection = None
 
+    def __del__(self):
+        if self.connection is not None:
+            self.connection.close()
+
     def get_db_path(self) -> str:
         databases = list_databases()
         for db in databases:
             if db["name"] == self.name:
                 return db["path"]
-        raise ValueError(f"Database with name {name} not found.")
+        raise ValueError(f"Database with name {self.name} not found.")
 
     def get_connection(self) -> Connection:
         if self.connection is None:
