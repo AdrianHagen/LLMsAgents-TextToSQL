@@ -7,11 +7,12 @@ import json
 import chardet
 from dotenv import load_dotenv
 from feedback_agent import FeedbackAgent
+from fixer_agent import FixerAgent
 import prompt_templates.select_relevant_database as select_relevant_database_templates
 import prompt_templates.select_relevant_tables as select_relevant_tables_templates
 from langchain.prompts import PromptTemplate
-from langchain_core.runnables import RunnableConfig
 from creator_agent import create_sql_query_creator
+from tools.database import Database
 
 load_dotenv()
 
@@ -37,7 +38,7 @@ def retrieve_table_names(database_name: str):
     return table_names
 
 
-def retrieve_table_descriptions(database_name: str, tables: list):
+def retrieve_column_names(database_name: str, tables: list):
     table_descriptions = {}
     descriptions_path = os.path.join(
         os.getenv("DB_DIRECTORY"), database_name, "database_description"
@@ -46,7 +47,7 @@ def retrieve_table_descriptions(database_name: str, tables: list):
     for table_name in tables:
         file_path = os.path.join(descriptions_path, f"{table_name}.csv")
         if os.path.exists(file_path):
-            # Detect encoding dynamically
+            # Detect encoding dynamically since it can vary from file to file
             with open(file_path, "rb") as file:
                 result = chardet.detect(file.read())
                 detected_encoding = (
@@ -59,8 +60,7 @@ def retrieve_table_descriptions(database_name: str, tables: list):
             # Extract column descriptions
             columns = table_data[["original_column_name", "column_description"]]
             table_descriptions[table_name] = [
-                f"{column.original_column_name}: {column.column_description}"
-                for column in columns.itertuples()
+                f"{column.original_column_name}" for column in columns.itertuples()
             ]
 
     return table_descriptions
@@ -111,7 +111,9 @@ def select_relevant_tables(state: State):
     )
     raw_response = llm.invoke(prompt)
     # Sometimes the LLM starts the response with some extra text, so we remove it
-    processed_response = raw_response[raw_response.find("{") :].strip()
+    processed_response = raw_response[
+        raw_response.find("{") : raw_response.rfind("}") + 1
+    ].strip()
 
     try:
         # Parse the JSON response
@@ -130,8 +132,8 @@ def select_relevant_tables(state: State):
     return state
 
 
-def get_table_descriptions(state: State):
-    state["relevant_tables"] = retrieve_table_descriptions(
+def get_table_column_names(state: State):
+    state["relevant_tables"] = retrieve_column_names(
         state["relevant_database"], list(state["relevant_tables"].keys())
     )
     return state
@@ -141,8 +143,24 @@ def create_sql_query(state: State):
     return create_sql_query_creator(state)
 
 
+def validate_sql_query_syntax(state: State):
+    db = Database(state["relevant_database"])
+    try:
+        db.execute_query(state["generated_sql_queries"][-1])
+        return True
+    except Exception as e:
+        state["errors"].append(f"Error executing query: {e}")
+        return False
+
+
 def validate_sql_query(state: State):
     return state["feedbacks"][-1]["is_correct"]
+
+
+def fix_sql_query(state: State):
+    fixer_agent = FixerAgent(llm=llm)
+    fixer_agent.analyse_incorrect_query(state)
+    return state
 
 
 def feedback_sql_query(state: State):
@@ -159,17 +177,23 @@ def final_result(state: State):
 graph_builder.add_node("initialize_state", initialize_state)
 graph_builder.add_node("select_relevant_database", select_relevant_database)
 graph_builder.add_node("select_relevant_tables", select_relevant_tables)
-graph_builder.add_node("get_table_descriptions", get_table_descriptions)
+graph_builder.add_node("get_table_column_names", get_table_column_names)
 graph_builder.add_node("creator_agent", create_sql_query)
+graph_builder.add_node("fixer_agent", fix_sql_query)
 graph_builder.add_node("feedback_agent", feedback_sql_query)
 graph_builder.add_node("final_result", final_result)
 
 graph_builder.add_edge(START, "initialize_state")
 graph_builder.add_edge("initialize_state", "select_relevant_database")
 graph_builder.add_edge("select_relevant_database", "select_relevant_tables")
-graph_builder.add_edge("select_relevant_tables", "get_table_descriptions")
-graph_builder.add_edge("get_table_descriptions", "creator_agent")
-graph_builder.add_edge("creator_agent", "feedback_agent")
+graph_builder.add_edge("select_relevant_tables", "get_table_column_names")
+graph_builder.add_edge("get_table_column_names", "creator_agent")
+graph_builder.add_conditional_edges(
+    "creator_agent",
+    validate_sql_query_syntax,
+    {True: "feedback_agent", False: "fixer_agent"},
+)
+graph_builder.add_edge("fixer_agent", "select_relevant_database")
 graph_builder.add_conditional_edges(
     "feedback_agent",
     validate_sql_query,
@@ -186,7 +210,9 @@ def visualize_graph():
         png_bytes = graph.get_graph().draw_mermaid_png()
 
         # Save to a file
-        with open("src/agents/workflow.png", "wb") as f:
+        with open(
+            os.path.join(os.getenv("SRC_DIRECTORY"), "agents/workflow.png"), "wb"
+        ) as f:
             f.write(png_bytes)
     except Exception as e:
         print(f"An error occurred: {e}")

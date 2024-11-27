@@ -34,9 +34,6 @@ class FeedbackAgent:
         )
 
         if response is not None:
-            print(f"Feedback agent: {response}")
-            print(f"Feedback agent: Query: {generated_sql_query}")
-            print(f"Feedback agent: Orignal Question: {original_question}")
             state["feedbacks"].append(response)
         else:
             state["errors"].append("Feedback Failed")
