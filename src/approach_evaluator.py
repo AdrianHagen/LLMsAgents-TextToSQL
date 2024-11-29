@@ -103,8 +103,6 @@ class ApproachEvaluator:
         for question_id, input_text, target_query in zip(
             self.question_ids, self.input_texts, self.target_queries
         ):
-            print(f"Input text: {input_text}")
-            print()
             predicted_query, database, feedbacks, errors = self.approach(input_text)
             is_correct = [
                 1 if evaluation_function(database, predicted_query, target_query) else 0
@@ -220,7 +218,7 @@ class ApproachEvaluator:
             )
             return predicted_result == target_result
         except Exception as e:
-            print(f"Error comparing query results: {e}")
+            print(f"Error with final query: {e}")
             print(f"Target query: {target_query}")
             print(f"Predicted query: {predicted_query}")
             return False
