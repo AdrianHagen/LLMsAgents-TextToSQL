@@ -1,4 +1,4 @@
-input_texts,predicted_queries,databases,target_queries,correct
+input_texts,predicted_query,predicted_database,target_queries,is_correct
 "Among the cards with converted mana cost higher than 5 in the set Coldsnap, how many of them have unknown power?",SELECT COUNT(*) FROM cards WHERE convertedManaCost > 5 AND power = 'Unknown' AND setCode = 'CSP';,card_games,SELECT SUM(CASE WHEN T1.power LIKE '*' OR T1.power IS NULL THEN 1 ELSE 0 END) FROM cards AS T1 INNER JOIN sets AS T2 ON T2.code = T1.setCode WHERE T2.name = 'Coldsnap' AND T1.convertedManaCost > 5,0
 Calculate the average home team goal in the 2010/2011 season in the country of Poland.,SELECT AVG(home_team_goal) FROM Match WHERE season = '2010/2011' AND country_id = (SELECT id FROM Country WHERE name = 'Poland');,european_football_2,SELECT CAST(SUM(t2.home_team_goal) AS REAL) / COUNT(t2.id) FROM Country AS t1 INNER JOIN Match AS t2 ON t1.id = t2.country_id WHERE t1.name = 'Poland' AND t2.season = '2010/2011',1
 Which college do most of the members go to?,"SQL
