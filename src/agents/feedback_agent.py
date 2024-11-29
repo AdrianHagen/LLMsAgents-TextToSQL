@@ -3,7 +3,6 @@ import json
 from langchain.prompts import PromptTemplate
 from langchain_anthropic import ChatAnthropic
 from langchain_core.language_models.chat_models import BaseChatModel
-from typing_extensions import TypedDict
 
 from state_types import FeedbackResponse, State
 from tools.database import Database

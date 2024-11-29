@@ -24,10 +24,6 @@ class Database:
         self.path = self.get_db_path()
         self.connection = None
 
-    def __del__(self):
-        if self.connection is not None:
-            self.connection.close()
-
     def get_db_path(self) -> str:
         databases = list_databases()
         for db in databases:

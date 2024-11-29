@@ -1,8 +1,12 @@
+import os
 from typing import Callable, List
-import numpy as np
 import sqlparse
 from difflib import SequenceMatcher
 from tools.database import Database
+import csv
+import pandas as pd
+from datetime import datetime
+import json
 
 
 class ApproachEvaluator:
@@ -30,32 +34,34 @@ class ApproachEvaluator:
     """
 
     def __init__(
-        self,
-        approach: Callable[[str], str],
-        input_texts: List[str],
-        target_queries: List[str],
+        self, run_config: dict, question_ids: List[int], approach: Callable[[str], str]
     ):
         """
         Initializes the ApproachEvaluator with the provided approach, inputs, and targets.
 
         Args:
-            approach (Callable[[str], str]):
-                A function or callable that generates a query from input text.
-            input_texts (List[str]):
-                The list of input texts for query generation.
-            target_queries (List[str]):
-                The list of expected (target) queries.
+            run_config (dict): The configuration for the run.
+            question_ids (List[int]): The list of query IDs to filter the data.
+            approach (Callable[[str], str]): A function or callable that generates a query from input text.
 
         Raises:
             AssertionError: If the lengths of input_texts and target_queries do not match.
         """
+        self.run_config = run_config
         self.approach = approach
-        assert len(input_texts) == len(
-            target_queries
-        ), "Input texts and target queries must have the same length."
-        self.input_texts = input_texts
-        self.target_queries = target_queries
-        self.accuracies = []
+        self.question_ids = question_ids
+        dev_data = pd.read_json(os.path.join(os.getenv("DATA_DIRECTORY"), "dev.json"))
+
+        # Filter the data based on question_ids
+        filtered_data = dev_data[dev_data["question_id"].isin(self.question_ids)]
+
+        self.input_texts = filtered_data["question"].tolist()
+        self.target_queries = filtered_data["SQL"].tolist()
+
+        # Ensure the lengths of input_texts and target_queries match
+        assert len(self.input_texts) == len(
+            self.target_queries
+        ), "Input texts and target queries lengths do not match."
 
     def evaluate(self, evaluation_method: str = "compare_query_results") -> float:
         """
@@ -85,12 +91,71 @@ class ApproachEvaluator:
 
         evaluation_function = method_map[evaluation_method]
 
-        for input_text, target_query in zip(self.input_texts, self.target_queries):
-            predicted_query, database = self.approach(input_text)
-            accuracy = evaluation_function(database, predicted_query, target_query)
-            self.accuracies.append(accuracy)
+        results = {
+            "question_id": [],
+            "predicted_query": [],
+            "predicted_database": [],
+            "feedbacks": [],
+            "errors": [],
+            "is_correct": [],
+        }
 
-        return np.mean(self.accuracies)
+        for question_id, input_text, target_query in zip(
+            self.question_ids, self.input_texts, self.target_queries
+        ):
+            print(f"Input text: {input_text}")
+            print()
+            predicted_query, database, feedbacks, errors = self.approach(input_text)
+            is_correct = [
+                1 if evaluation_function(database, predicted_query, target_query) else 0
+            ]
+            results["question_id"].append(question_id)
+            results["predicted_query"].append(predicted_query)
+            results["predicted_database"].append(database)
+            results["feedbacks"].append(feedbacks)
+            results["errors"].append(errors)
+            results["is_correct"].append(is_correct)
+
+        self.log_results(results)
+
+        return results
+
+    def log_results(self, results: dict):
+        """
+        Logs the results of the evaluation to a CSV file and saves the run configuration.
+
+        Args:
+            results (dict): The results of the evaluation.
+        """
+        # Convert any Pandas Series in the results to lists
+        for key, value in results.items():
+            if isinstance(value, pd.Series):
+                results[key] = value.tolist()
+
+        # Generate the timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        # Create a directory with the timestamp
+        results_dir = os.path.join(
+            os.getenv("EVAL_DIRECTORY"), "results", f"results_{timestamp}"
+        )
+        os.makedirs(results_dir, exist_ok=True)
+
+        # Save the run configuration as a JSON file in the directory
+        run_config_path = os.path.join(results_dir, "run_config.json")
+        with open(run_config_path, "w") as json_file:
+            json.dump(self.run_config, json_file, indent=4)
+
+        # Determine the CSV file path in the directory
+        csv_file_path = os.path.join(results_dir, "results.csv")
+
+        # Write the results to the CSV file
+        with open(csv_file_path, mode="w", newline="") as file:
+            writer = csv.DictWriter(file, fieldnames=results.keys())
+            writer.writeheader()
+            writer.writerows(
+                [dict(zip(results.keys(), row)) for row in zip(*results.values())]
+            )
 
     def exact_matching(self, database: str, predicted: str, target: str) -> int:
         """
@@ -146,8 +211,8 @@ class ApproachEvaluator:
         Returns:
             bool: A boolean value indicating whether the query results are the same.
         """
-        db = Database(database)
         try:
+            db = Database(database)
             predicted_result = db.execute_query(predicted_query)
             target_result = db.execute_query(target_query)
             print(
