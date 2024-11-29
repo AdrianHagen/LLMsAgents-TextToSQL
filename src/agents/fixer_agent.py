@@ -2,6 +2,7 @@ import json
 
 from langchain.prompts import PromptTemplate
 from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 from langchain_core.language_models.chat_models import BaseChatModel
 
 from state_types import FixerResponse, State
