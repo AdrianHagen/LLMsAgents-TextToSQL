@@ -150,7 +150,7 @@ def validate_sql_query_syntax(state: State):
         db.execute_query(state["generated_sql_queries"][-1])
         return True
     except Exception as e:
-        state["errors"].append(f"Orchestrator Agent: Error executing query: {e}")
+        state["errors"].append(f"Error executing query: {e}")
         return False
 
 

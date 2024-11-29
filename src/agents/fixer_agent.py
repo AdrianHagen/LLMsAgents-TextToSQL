@@ -25,7 +25,7 @@ class FixerAgent:
     def analyse_incorrect_query(self, state: State):
         original_question = state["original_question"]
         database = state["relevant_database"]
-        error_message = state["errors"][:-1]
+        error_message = state["errors"][-1]
 
         response = self._analyse_incorrect_query(
             original_question, database, error_message
