@@ -2,6 +2,8 @@ import sqlite3
 from sqlite3 import Connection
 from threading import Lock
 import os
+import timeit
+from typing import Tuple
 
 
 def list_databases() -> list:
@@ -18,11 +20,21 @@ def list_databases() -> list:
     return db_list
 
 
+import sqlite3
+from sqlite3 import Connection
+from threading import Lock
+import os
+import timeit
+from typing import Tuple
+
+
 class Database:
+    _connection_pool = {}  # Shared pool for database connections
+    _lock = Lock()  # Lock for thread-safe access to the connection pool
+
     def __init__(self, name: str):
         self.name = name
         self.path = self.get_db_path()
-        self.connection = None
 
     def get_db_path(self) -> str:
         databases = list_databases()
@@ -32,14 +44,30 @@ class Database:
         raise ValueError(f"Database with name {self.name} not found.")
 
     def get_connection(self) -> Connection:
-        if self.connection is None:
-            self.connection = sqlite3.connect(self.path)
-        return self.connection
+        with self._lock:
+            # Check if the connection for this database already exists
+            if self.path not in self._connection_pool:
+                # Create a new connection if not already present
+                self._connection_pool[self.path] = sqlite3.connect(self.path)
+            return self._connection_pool[self.path]
 
-    def execute_query(self, query: str, params: tuple = ()) -> list:
+    def execute_query(self, query: str, params: tuple = ()) -> Tuple[list, float]:
         conn = self.get_connection()
         cursor = conn.cursor()
+        start_time = timeit.default_timer()
         cursor.execute(query, params)
+
         results = cursor.fetchall()
         cursor.close()
-        return results
+
+        execution_time = timeit.default_timer() - start_time
+
+        return (results, execution_time)
+
+    @classmethod
+    def close_all_connections(cls):
+        with cls._lock:
+            # Close all connections in the pool
+            for conn in cls._connection_pool.values():
+                conn.close()
+            cls._connection_pool.clear()

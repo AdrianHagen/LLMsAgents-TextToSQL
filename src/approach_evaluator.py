@@ -1,5 +1,7 @@
 import os
 from typing import Callable, List
+import numpy as np
+import pandas as pd
 import sqlparse
 from difflib import SequenceMatcher
 from tools.database import Database
@@ -212,9 +214,8 @@ class ApproachEvaluator:
             bool: A boolean value indicating whether the query results are the same.
         """
         try:
-            db = Database(database)
-            predicted_result = db.execute_query(predicted_query)
-            target_result = db.execute_query(target_query)
+            predicted_result, _ = db.execute_query(predicted_query)
+            target_result, _ = db.execute_query(target_query)
             print(
                 f"Predicted result: {predicted_result}, Target result: {target_result}"
             )
@@ -224,3 +225,61 @@ class ApproachEvaluator:
             print(f"Target query: {target_query}")
             print(f"Predicted query: {predicted_query}")
             return False
+
+
+def avg_execution_time(db_ids: List[str], queries: List[str]) -> List[float]:
+    outer_execution_times = []
+
+    for db_id, query in zip(db_ids, queries):
+        execution_times = []
+
+        db = Database(db_id)
+
+        for i in range(100):
+            _, execution_time = db.execute_query(query)
+            if execution_time > 30:
+                execution_time = 30
+            execution_times.append(execution_time)
+
+        execution_times = np.array(execution_times)
+        mean = execution_times.mean()
+        std = execution_times.std()
+
+        ma = mean + 3 * std
+        mi = mean - 3 * std
+
+        execution_times = execution_times[
+            (execution_times >= mi) & (execution_times <= ma)
+        ]
+        mean = execution_times.mean()
+
+        outer_execution_times.append(execution_times.mean())
+
+    return outer_execution_times
+
+
+def valid_efficiency_score(df: pd.DataFrame) -> float:
+    """
+    Calculates the valid efficiency score for the given DataFrame.
+
+    Args:
+        df (pd.DataFrame): The DataFrame containing the evaluation data.
+
+    Returns:
+        float: The valid efficiency score.
+    """
+    # Read the development dataset
+    dev = pd.read_csv("../sample/dev.csv")
+
+    # Calculate the average predicted execution times
+    avg_predicted_execution_times = avg_execution_time(
+        df["database"], df["predicted_query"]
+    )
+
+    # Calculate the valid efficiency score
+    score = (
+        df["is_correct"]
+        * np.sqrt(dev["execution_time"] / avg_predicted_execution_times)
+    ).sum() / len(dev)
+
+    return score
