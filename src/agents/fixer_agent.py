@@ -3,10 +3,8 @@ import json
 from langchain.prompts import PromptTemplate
 from langchain_anthropic import ChatAnthropic
 from langchain_core.language_models.chat_models import BaseChatModel
-from typing_extensions import TypedDict
 
 from state_types import FixerResponse, State
-from tools.database import Database
 import prompt_templates.fixer_agent as templates
 
 
@@ -43,8 +41,6 @@ class FixerAgent:
         self, query: str, database: str, error_message: str
     ) -> FixerResponse | None:
 
-        database = Database(database)
-
         p = self.prompt.invoke(
             input={
                 "query": query,
@@ -53,7 +49,7 @@ class FixerAgent:
             }
         )
 
-        response = self.llm.invoke(p)
+        response = self.llm.invoke(p).content
         response = response.replace("Output:", "").strip()
 
         try:

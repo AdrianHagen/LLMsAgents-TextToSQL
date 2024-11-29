@@ -1,6 +1,6 @@
 from state_types import State
 from langgraph.graph import StateGraph, START, END
-from langchain_openai import OpenAI
+from langchain_openai import ChatOpenAI
 import os
 import pandas as pd
 import json
@@ -18,7 +18,7 @@ load_dotenv()
 
 
 graph_builder = StateGraph(State)
-llm = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+llm = ChatOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def retrieve_database_names():
@@ -60,7 +60,8 @@ def retrieve_column_names(database_name: str, tables: list):
             # Extract column descriptions
             columns = table_data[["original_column_name", "column_description"]]
             table_descriptions[table_name] = [
-                f"{column.original_column_name}" for column in columns.itertuples()
+                f"Column name: {column.original_column_name}, Column description: {column.column_description}"
+                for column in columns.itertuples()
             ]
 
     return table_descriptions
@@ -88,7 +89,7 @@ def select_relevant_database(state: State):
             "feedback_trace": json.dumps(state["feedbacks"]),
         }
     )
-    response = llm.invoke(prompt)
+    response = llm.invoke(prompt).content
 
     state["relevant_database"] = response.strip().lower()
     for table_name in retrieve_table_names(state["relevant_database"]):
@@ -109,7 +110,7 @@ def select_relevant_tables(state: State):
             "feedback_trace": json.dumps(state["feedbacks"]),
         }
     )
-    raw_response = llm.invoke(prompt)
+    raw_response = llm.invoke(prompt).content
     # Sometimes the LLM starts the response with some extra text, so we remove it
     processed_response = raw_response[
         raw_response.find("{") : raw_response.rfind("}") + 1
@@ -144,12 +145,12 @@ def create_sql_query(state: State):
 
 
 def validate_sql_query_syntax(state: State):
-    db = Database(state["relevant_database"])
     try:
+        db = Database(state["relevant_database"])
         db.execute_query(state["generated_sql_queries"][-1])
         return True
     except Exception as e:
-        state["errors"].append(f"Error executing query: {e}")
+        state["errors"].append(f"Orchestrator Agent: Error executing query: {e}")
         return False
 
 
@@ -247,8 +248,9 @@ def create_sql_from_natural_text(natural_text: str, max_iterations: int = 20):
         natural_text (str): The natural language text to be converted into an SQL query.
 
     Returns:
-        tuple: A tuple containing the generated SQL query (str) and the relevant database (str).
-               If the final query is not generated, it returns ("Final Query was not generated", "").
+        tuple: A tuple containing the generated SQL query (str), the relevant database (str),
+               feedbacks (list), and errors (list).
+               If the final query is not generated, it returns ("Final Query was not generated", "", [], []).
     """
     iteration_count = 0
 
@@ -260,17 +262,27 @@ def create_sql_from_natural_text(natural_text: str, max_iterations: int = 20):
                 for _, value in event.items():
                     for sub_key, sub_value in value.items():
                         if sub_key == "generated_sql_queries":
-                            return sub_value[-1], value["relevant_database"]
+                            return (
+                                sub_value[-1],
+                                value["relevant_database"],
+                                value.get("feedbacks", []),
+                                value.get("errors", []),
+                            )
 
             for _, value in event.items():
                 for sub_key, sub_value in value.items():
                     if sub_key == "final_query" and sub_value:
-                        return sub_value, value["relevant_database"]
+                        return (
+                            sub_value,
+                            value["relevant_database"],
+                            value.get("feedbacks", []),
+                            value.get("errors", []),
+                        )
     except Exception as e:
         print(f"Orchestrator Agent: An error occurred: {e}")
-        return "", ""
+        return "", "", [], []
 
-    return "Final Query was not generated", ""
+    return "Final Query was not generated", "", [], []
 
 
 if __name__ == "__main__":

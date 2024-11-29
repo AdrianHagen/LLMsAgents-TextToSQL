@@ -147,7 +147,7 @@ TWO_SHOT = """
         }}
 
         Example Output with Feedback:
-        SELECT AVG(`Household Income`) FROM income_data WHERE `County` = 'King' AND `Year` = 2021;
+        SELECT AVG("Household Income") FROM income_data WHERE "County" = 'King' AND "Year" = 2021;
 
         -------------------------------------------------------------------------------
 
