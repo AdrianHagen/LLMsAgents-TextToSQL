@@ -271,15 +271,20 @@ def valid_efficiency_score(df: pd.DataFrame) -> float:
     # Read the development dataset
     dev = pd.read_csv("../sample/dev.csv")
 
+    n = len(dev)
+
+    dev = dev[df["is_correct"] == 1]
+    df = df[df["is_correct"] == 1]
+
     # Calculate the average predicted execution times
     avg_predicted_execution_times = avg_execution_time(
-        df["database"], df["predicted_query"]
+        df["predicted_database"], df["predicted_query"]
     )
 
     # Calculate the valid efficiency score
     score = (
         df["is_correct"]
         * np.sqrt(dev["execution_time"] / avg_predicted_execution_times)
-    ).sum() / len(dev)
+    ).sum() / n
 
     return score
