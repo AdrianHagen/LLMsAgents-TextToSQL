@@ -65,7 +65,12 @@ class FeedbackAgent:
             }
         )
 
-        response = self.llm.invoke(p)
+        try:
+            response = self.llm.invoke(p)
+        except Exception as e:
+            print(f"Feedback Agent: LLM invoke failed : {e}")
+            return None
+
         try:
             return json.loads(response.content)
         except Exception as e:
