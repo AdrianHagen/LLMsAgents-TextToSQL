@@ -40,6 +40,6 @@ def create_sql_query_creator(
         }
     )
     response = llm.invoke(prompt)
-    response = response.replace("Output:", "").strip()
+    response = response.content.replace("Output:", "").replace("```sql\n", "").replace("```", "").replace("```json\n", "").replace("```", "").strip()
     state["generated_sql_queries"].append(response)
     return state
