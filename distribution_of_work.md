@@ -23,7 +23,7 @@ Team members:
 ### Evaluation of approaches
 - adhagen
 
-### Develop the baseline approach and implement it
+### Developing the baseline approach and implementing it
 - mabrams
 
 ### Creating various templates for different prompting techniques
