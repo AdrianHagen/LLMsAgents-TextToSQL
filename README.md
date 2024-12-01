@@ -1,7 +1,7 @@
 # LLMsAgents-TextToSQL
 Repository for an agent-based system that converts natural language queries to SQL
 
-![Architecture](./documents/LLM%20and%20Agents.png)
+![Architecture](./documents/workflow.png)
 
 ### Setup
 This project uses poetry for dependency management, so make sure you have it installed. After that, simply run `make initial-setup` from the root directory of the project.
