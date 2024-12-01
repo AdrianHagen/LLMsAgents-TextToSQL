@@ -65,7 +65,9 @@ class ApproachEvaluator:
             self.target_queries
         ), "Input texts and target queries lengths do not match."
 
-    def evaluate(self, evaluation_method: str = "compare_query_results") -> float:
+    def evaluate(
+        self, evaluation_method: str = "compare_query_results", verbose=False
+    ) -> float:
         """
         Evaluates the approach using the specified evaluation method.
 
@@ -115,6 +117,10 @@ class ApproachEvaluator:
             results["feedbacks"].append(feedbacks)
             results["errors"].append(errors)
             results["is_correct"].append(is_correct)
+            if verbose:
+                print(
+                    f"Question ID: {question_id}\nPredicted query: {predicted_query}\nTarget query: {target_query}\nIs correct: {is_correct}"
+                )
 
         self.log_results(results)
 

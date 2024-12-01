@@ -6,7 +6,7 @@ ZERO_SHOT = """
         
         {{
             "original_question": "The natural language question that needs to be answered.",
-            "relevant_tables": "A dictionary where keys are table names and values are lists of all columns in those tables.",
+            "relevant_tables": "A dictionary where keys are table names and values are lists of columns with their descriptions in those tables.",
             "feedback_trace": "Feedback from previous attempts, if any.",
             "error_trace": "Error messages from previous attempts, if any."
         }}
@@ -17,8 +17,8 @@ ZERO_SHOT = """
 
         Steps to Perform:
         1. Analyze the original question to understand the information being requested.
-        2. Review the relevant tables and their columns to identify where the necessary data is stored.
-        3. Consider any feedback and error traces to avoid repeating mistakes.
+        2. Review the feedback and error traces first to avoid repeating mistakes.
+        3. Then, review the relevant tables and their columns to identify where the necessary data is stored.
         4. Generate a correct SQL query using SQLite syntax that retrieves the required information from the relevant tables.
 
         Output Format:
@@ -50,7 +50,7 @@ ONE_SHOT = """
         
         {{
             "original_question": "The natural language question that needs to be answered.",
-            "relevant_tables": "A dictionary where keys are table names and values are lists of all columns in those tables.",
+            "relevant_tables": "A dictionary where keys are table names and values are lists of columns with their descriptions in those tables.",
             "feedback_trace": "Feedback from previous attempts, if any.",
             "error_trace": "Error messages from previous attempts, if any."
         }}
@@ -61,8 +61,8 @@ ONE_SHOT = """
 
         Steps to Perform:
         1. Analyze the original question to understand the information being requested.
-        2. Review the relevant tables and their columns to identify where the necessary data is stored.
-        3. Consider any feedback and error traces to avoid repeating mistakes.
+        2. Review the feedback and error traces first to avoid repeating mistakes.
+        3. Then, review the relevant tables and their columns to identify where the necessary data is stored.
         4. Generate a correct SQL query using SQLite syntax that retrieves the required information from the relevant tables.
 
         Output Format:
@@ -79,7 +79,7 @@ ONE_SHOT = """
         Example Input with Feedback and Error Trace:
         {{
             "original_question": "What is the average household income in King County for 2021?",
-            "relevant_tables": {{"income_data": ["Household Income", "County", "Year", "Population"]}},
+            "relevant_tables": {{"Table name: income_data": ["Column name: Household Income, Column description: income of the household", "Column name: County, Column description: name of the county", "Column name: Year, Column description: year of the data", "Column name: Population, Column description: population of the county"]}},
             "feedback_trace": {{'query_result': 'error', 'is_correct': False, 'feedback': 'Error executing query: no such column: state', 'updated_query': None}},
             "error_trace": ["Error executing query: no such column: state"]
         }}
@@ -107,7 +107,7 @@ TWO_SHOT = """
         
         {{
             "original_question": "The natural language question that needs to be answered.",
-            "relevant_tables": "A dictionary where keys are table names and values are lists of all columns in those tables.",
+            "relevant_tables": "A dictionary where keys are table names and values are lists of columns with their descriptions in those tables.",
             "feedback_trace": "Feedback from previous attempts, if any.",
             "error_trace": "Error messages from previous attempts, if any."
         }}
@@ -118,8 +118,8 @@ TWO_SHOT = """
 
         Steps to Perform:
         1. Analyze the original question to understand the information being requested.
-        2. Review the relevant tables and their columns to identify where the necessary data is stored.
-        3. Consider any feedback and error traces to avoid repeating mistakes.
+        2. Review the feedback and error traces first to avoid repeating mistakes.
+        3. Then, review the relevant tables and their columns to identify where the necessary data is stored.
         4. Generate a correct SQL query using SQLite syntax that retrieves the required information from the relevant tables.
 
         Output Format:
@@ -136,7 +136,7 @@ TWO_SHOT = """
         Example Input with Feedback and Error Trace:
         {{
             "original_question": "What is the average household income in King County for 2021?",
-            "relevant_tables": {{"income_data": ["Household Income", "County", "Year", "Population"]}},
+            "relevant_tables": {{"Table name: income_data": ["Column name: Household Income, Column description: income of the household", "Column name: County, Column description: name of the county", "Column name: Year, Column description: year of the data", "Column name: Population, Column description: population of the county"]}},
             "feedback_trace": {{'query_result': 'error', 'is_correct': False, 'feedback': 'Error executing query: no such column: state', 'updated_query': None}},
             "error_trace": ["Error executing query: no such column: state"]
         }}

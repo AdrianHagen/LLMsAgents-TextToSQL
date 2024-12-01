@@ -43,7 +43,7 @@ class FeedbackAgent:
         try:
             db = Database(database)
 
-            results = db.execute_query(generated_sql_query)
+            (results, _) = db.execute_query(generated_sql_query)
         except Exception as e:
             print(e)
             return {
