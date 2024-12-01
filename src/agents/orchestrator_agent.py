@@ -1,24 +1,27 @@
-from state_types import State
-from langgraph.graph import StateGraph, START, END
-from langchain_openai import ChatOpenAI
-import os
-import pandas as pd
 import json
+import os
+
 import chardet
+import pandas as pd
+from creator_agent import create_sql_query_creator
 from dotenv import load_dotenv
 from feedback_agent import FeedbackAgent
 from fixer_agent import FixerAgent
+from gen_ai_hub.proxy.core.proxy_clients import get_proxy_client
+from langchain.prompts import PromptTemplate
+from langchain_google_vertexai import ChatVertexAI
+from langchain_openai import ChatOpenAI
+from langgraph.graph import END, START, StateGraph
+from state_types import State
+
 import prompt_templates.select_relevant_database as select_relevant_database_templates
 import prompt_templates.select_relevant_tables as select_relevant_tables_templates
-from langchain.prompts import PromptTemplate
-from creator_agent import create_sql_query_creator
 from tools.database import Database
 
 load_dotenv()
 
 
 graph_builder = StateGraph(State)
-llm = ChatOpenAI(api_key=os.getenv("OPENAI_API_KEY"), temperature=0)
 
 
 def retrieve_database_names():
@@ -68,6 +71,22 @@ def retrieve_column_names(database_name: str, tables: list):
 
 
 def initialize_state(state: State):
+    if state["llm_orchestrator"] == "gpt":
+        state["llm_orchestrator"] = ChatOpenAI(proxy_model_name="gpt-4o-mini", proxy_client=get_proxy_client("gen-ai-hub"), temperature=0)
+    elif state["llm_orchestrator"] == "gemini":
+        state["llm_orchestrator"] = ChatVertexAI(proxy_model_name="gemini-1.5-pro", proxy_client=get_proxy_client("gen-ai-hub"))
+    else:
+        print("Orchestrator Agent: Initialization error: Orchestrator model invalid")
+        state["llm_orchestrator"] = None
+
+    if state["llm_creator"] == "gpt":
+        state["llm_creator"] = ChatOpenAI(proxy_model_name="gpt-4o-mini", proxy_client=get_proxy_client("gen-ai-hub"), temperature=0)
+    elif state["llm_orchestrator"] == "gemini":
+        state["llm_creator"] = ChatVertexAI(proxy_model_name="gemini-1.5-pro", proxy_client=get_proxy_client("gen-ai-hub"))
+    else:
+        print("Orchestrator Agent: Initialization error: Orchestrator model invalid")
+        state["llm_creator"] = None
+
     state["relevant_database"] = ""
     state["relevant_tables"] = {}
     state["original_question"] = state["messages"][0].content
@@ -89,7 +108,7 @@ def select_relevant_database(state: State):
             "feedback_trace": json.dumps(state["feedbacks"]),
         }
     )
-    response = llm.invoke(prompt).content
+    response = state["llm_orchestrator"].invoke(prompt).content
 
     state["relevant_database"] = response.strip().lower()
     for table_name in retrieve_table_names(state["relevant_database"]):
@@ -109,7 +128,7 @@ def select_relevant_tables(state: State):
             "feedback_trace": json.dumps(state["feedbacks"]),
         }
     )
-    response = llm.invoke(prompt).content
+    response = state["llm_orchestrator"].invoke(prompt).content
     # response may look like: {"tables": ["Patient", "Examination"]}
 
     try:
@@ -154,13 +173,13 @@ def validate_sql_query(state: State):
 
 
 def fix_sql_query(state: State):
-    fixer_agent = FixerAgent(llm=llm)
+    fixer_agent = FixerAgent(llm=state["llm_orchestrator"])
     fixer_agent.analyse_incorrect_query(state)
     return state
 
 
-def feedback_sql_query(state: State):
-    feedback_agent = FeedbackAgent(llm=llm)
+def feedback_sql_query(state: State, llm):
+    feedback_agent = FeedbackAgent()
     feedback_agent.evaluate_query(state)
     return state
 
@@ -234,15 +253,25 @@ def stream_graph_updates(user_input: str):
         print(formatted_output)
 
 
-def create_sql_from_natural_text(natural_text: str, max_iterations: int = 20):
+def create_sql_from_natural_text(
+    natural_text: str,
+    max_iterations: int = 20,
+    llm_orchestrator=None,
+    llm_creator=None,
+    prompting_technique_creator=None,
+):
     """
-    Converts natural language text into an SQL query.
+    Converts natural language text into an SQL query with support for multiple inputs.
 
     This function takes a natural language input string and processes it through a graph stream to generate an SQL query.
     It listens for events in the graph stream and extracts the final SQL query and the relevant database from the event data.
 
     Args:
         natural_text (str): The natural language text to be converted into an SQL query.
+        max_iterations (int): Maximum iterations for the graph stream processing.
+        llm_orchestrator: An optional object or setting for orchestrating the LLM.
+        llm_creator: An optional object or setting for creating LLMs.
+        prompting_technique_creator: An optional object or setting for creating prompting techniques.
 
     Returns:
         tuple: A tuple containing the generated SQL query (str), the relevant database (str),
@@ -251,8 +280,16 @@ def create_sql_from_natural_text(natural_text: str, max_iterations: int = 20):
     """
     iteration_count = 0
 
+    # Prepare additional inputs
+    inputs = {
+        "messages": [("user", natural_text)],
+        "llm_orchestrator": llm_orchestrator,
+        "llm_creator": llm_creator,
+        "prompting_technique_creator": prompting_technique_creator,
+    }
+
     try:
-        for event in graph.stream({"messages": [("user", natural_text)]}):
+        for event in graph.stream(inputs):
             iteration_count += 1
             if iteration_count > max_iterations:
                 print("Stopping condition reached: Maximum iterations exceeded")
