@@ -15,6 +15,7 @@ Team members:
 - adhagen
 
 ### Development of Fixer agent
+- ppaskuda (first drafts)
 
 ### Development of Feedback Agent
 
@@ -25,7 +26,9 @@ Team members:
 
 ### Creating various templates for different prompting techniques
 - adhagen
+- ppaskuda (final templates for creator and for agent)
 
 ### Research of related work
 
 ### PowerPoint Presentation
+- ppaskuda 
