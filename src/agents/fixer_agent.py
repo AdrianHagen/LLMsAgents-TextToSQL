@@ -37,7 +37,6 @@ class FixerAgent:
         else:
             state["errors"].append("Feedback Failed")
 
-    # TODO - Could include the original question
     def _analyse_incorrect_query(
         self, query: str, database: str, error_message: str
     ) -> FixerResponse | None:
@@ -51,7 +50,9 @@ class FixerAgent:
         )
 
         response = self.llm.invoke(p).content
+        print(f"Fixer Agent: Response: {response}")
         response = response.replace("Output:", "").strip()
+        print(f"Fixer Agent: Response parsed: {response}")
 
         try:
             return json.loads(response)

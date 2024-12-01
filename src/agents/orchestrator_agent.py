@@ -59,7 +59,7 @@ def retrieve_column_names(database_name: str, tables: list):
 
             # Extract column descriptions
             columns = table_data[["original_column_name", "column_description"]]
-            table_descriptions[table_name] = [
+            table_descriptions[f"Table name: {table_name}"] = [
                 f"Column name: {column.original_column_name}, Column description: {column.column_description}"
                 for column in columns.itertuples()
             ]
