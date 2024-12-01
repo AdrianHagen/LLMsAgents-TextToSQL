@@ -27,9 +27,10 @@ class FixerAgent:
         original_question = state["original_question"]
         database = state["relevant_database"]
         error_message = state["errors"][-1]
+        relevant_tables = json.dumps(state["relevant_tables"])
 
         response = self._analyse_incorrect_query(
-            original_question, database, error_message
+            original_question, database, relevant_tables, error_message
         )
 
         if response is not None:
@@ -38,21 +39,20 @@ class FixerAgent:
             state["errors"].append("Feedback Failed")
 
     def _analyse_incorrect_query(
-        self, query: str, database: str, error_message: str
+        self, query: str, database: str, relevant_tables: str, error_message: str
     ) -> FixerResponse | None:
 
         p = self.prompt.invoke(
             input={
                 "query": query,
                 "database": database,
+                "relevant_tables": relevant_tables,
                 "error_message": error_message,
             }
         )
 
         response = self.llm.invoke(p).content
-        print(f"Fixer Agent: Response: {response}")
         response = response.replace("Output:", "").strip()
-        print(f"Fixer Agent: Response parsed: {response}")
 
         try:
             return json.loads(response)

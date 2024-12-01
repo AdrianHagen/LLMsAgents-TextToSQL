@@ -142,7 +142,20 @@ TWO_SHOT = """
         }}
 
         Example Output with Feedback and Error Trace:
-        SELECT AVG("Household Income") FROM income_data WHERE "County" = 'King' AND "Year" = 2021;
+        SELECT AVG(Household_Income) FROM income_data WHERE County = 'King' AND Year = 2021;
+
+        -------------------------------------------------------------------------------
+
+        Example Input with Feedback and Error Trace:
+        {{
+            "original_question": "What is the label of the transaction with ID 'TR001_10_11'?",
+            "relevant_tables": {{"Table name: trans": ["Column name: trans_id, Column description: ID of the transaction", "Column name: Label, Column description: label of the transaction", "Column name: type, Column description: type of the transaction"]}},
+            "feedback_trace": [{{"query_result": "[]", "is_correct": false, "feedback": "The query did not return any results, which indicates an issue with the query. The field names should not be enclosed in double quotes. Also, check if the 'type' field is correctly filtered.", "updated_query": "SELECT Label FROM trans WHERE trans_id = 'TR001_10_11' AND type = 'transaction';"}}],
+            "error_trace": ["The query did not return any results, which indicates an issue with the query. The field names should not be enclosed in double quotes. Also, check if the 'type' field is correctly filtered."]
+        }}
+
+        Example Output with Feedback and Error Trace:
+        SELECT Label FROM trans WHERE trans_id = 'TR001_10_11' AND type = 'transaction';
 
         -------------------------------------------------------------------------------
 

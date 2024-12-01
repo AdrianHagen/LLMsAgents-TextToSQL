@@ -11,6 +11,7 @@ ONE_SHOT = """
                 "incorrect_query": "The syntactically incorrect SQL query which was provided to you by SQL creator agent.",
                 "error_message": "The revieved error message by the syntax checker.",
                 "database": "The database on which the query was run.",
+                "relevant_tables": "A dictionary where keys are table names and values are lists of columns with their descriptions in those tables.",
             }}
 
             -------------------------------------------------------------------------------
@@ -57,6 +58,14 @@ ONE_SHOT = """
             {{
                 "query": "SELECT SUM(revenue) FORM sales WHERE year = 2023;",
                 "database": "sales",
+                "relevant_tables": {{
+                    "Table name: income_data": [
+                        "Column name: Household Income, Column description: income of the household",
+                        "Column name: County, Column description: name of the county",
+                        "Column name: Year, Column description: year of the data",
+                        "Column name: Population, Column description: population of the county"
+                    ]
+                }},
                 "error_message": "ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FORM sales WHERE year = 2023' at line 1",
             }}
 
@@ -74,6 +83,7 @@ ONE_SHOT = """
             {{
                 "incorrect_query": "{query}",
                 "database": "{database}",
+                "relevant_tables": "{relevant_tables}",
                 "error_message": "{error_message}",
             }}
             """

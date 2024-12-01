@@ -102,12 +102,15 @@ class ApproachEvaluator:
             "feedbacks": [],
             "errors": [],
             "is_correct": [],
+            "run_status": [],
         }
 
         for question_id, input_text, target_query in zip(
             self.question_ids, self.input_texts, self.target_queries
         ):
-            predicted_query, database, feedbacks, errors = self.approach(input_text)
+            predicted_query, database, feedbacks, errors, run_status = self.approach(
+                input_text
+            )
             is_correct = [
                 1 if evaluation_function(database, predicted_query, target_query) else 0
             ]
@@ -117,6 +120,7 @@ class ApproachEvaluator:
             results["feedbacks"].append(feedbacks)
             results["errors"].append(errors)
             results["is_correct"].append(is_correct)
+            results["run_status"].append(run_status)
             if verbose:
                 print(
                     f"Question ID: {question_id}\nPredicted query: {predicted_query}\nTarget query: {target_query}\nIs correct: {is_correct}"
