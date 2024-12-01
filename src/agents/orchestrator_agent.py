@@ -22,6 +22,16 @@ load_dotenv()
 
 
 graph_builder = StateGraph(State)
+llm_gpt = ChatOpenAI(
+    proxy_model_name="gpt-4o-mini",
+    proxy_client=get_proxy_client("gen-ai-hub"),
+    temperature=0,
+)
+
+llm_gemini = ChatVertexAI(
+    proxy_model_name="gemini-1.5-pro",
+    proxy_client=get_proxy_client("gen-ai-hub"),
+)
 
 
 def retrieve_database_names():
@@ -71,22 +81,6 @@ def retrieve_column_names(database_name: str, tables: list):
 
 
 def initialize_state(state: State):
-    if state["llm_orchestrator"] == "gpt":
-        state["llm_orchestrator"] = ChatOpenAI(proxy_model_name="gpt-4o-mini", proxy_client=get_proxy_client("gen-ai-hub"), temperature=0)
-    elif state["llm_orchestrator"] == "gemini":
-        state["llm_orchestrator"] = ChatVertexAI(proxy_model_name="gemini-1.5-pro", proxy_client=get_proxy_client("gen-ai-hub"))
-    else:
-        print("Orchestrator Agent: Initialization error: Orchestrator model invalid")
-        state["llm_orchestrator"] = None
-
-    if state["llm_creator"] == "gpt":
-        state["llm_creator"] = ChatOpenAI(proxy_model_name="gpt-4o-mini", proxy_client=get_proxy_client("gen-ai-hub"), temperature=0)
-    elif state["llm_orchestrator"] == "gemini":
-        state["llm_creator"] = ChatVertexAI(proxy_model_name="gemini-1.5-pro", proxy_client=get_proxy_client("gen-ai-hub"))
-    else:
-        print("Orchestrator Agent: Initialization error: Orchestrator model invalid")
-        state["llm_creator"] = None
-
     state["relevant_database"] = ""
     state["relevant_tables"] = {}
     state["original_question"] = state["messages"][0].content
@@ -108,7 +102,7 @@ def select_relevant_database(state: State):
             "feedback_trace": json.dumps(state["feedbacks"]),
         }
     )
-    response = state["llm_orchestrator"].invoke(prompt).content
+    response = llm_gpt.invoke(prompt).content
 
     state["relevant_database"] = response.strip().lower()
     for table_name in retrieve_table_names(state["relevant_database"]):
@@ -128,7 +122,7 @@ def select_relevant_tables(state: State):
             "feedback_trace": json.dumps(state["feedbacks"]),
         }
     )
-    response = state["llm_orchestrator"].invoke(prompt).content
+    response = llm_gpt.invoke(prompt).content
     # response may look like: {"tables": ["Patient", "Examination"]}
 
     try:
@@ -155,7 +149,7 @@ def get_table_column_names_descriptions(state: State):
 
 
 def create_sql_query(state: State):
-    return create_sql_query_creator(state)
+    return create_sql_query_creator(state, llm=llm_gpt)
 
 
 def validate_sql_query_syntax(state: State):
@@ -173,7 +167,7 @@ def validate_sql_query(state: State):
 
 
 def fix_sql_query(state: State):
-    fixer_agent = FixerAgent(llm=state["llm_orchestrator"])
+    fixer_agent = FixerAgent(llm_gpt)
     fixer_agent.analyse_incorrect_query(state)
     return state
 
@@ -256,9 +250,6 @@ def stream_graph_updates(user_input: str):
 def create_sql_from_natural_text(
     natural_text: str,
     max_iterations: int = 20,
-    llm_orchestrator=None,
-    llm_creator=None,
-    prompting_technique_creator=None,
 ):
     """
     Converts natural language text into an SQL query with support for multiple inputs.
@@ -280,16 +271,8 @@ def create_sql_from_natural_text(
     """
     iteration_count = 0
 
-    # Prepare additional inputs
-    inputs = {
-        "messages": [("user", natural_text)],
-        "llm_orchestrator": llm_orchestrator,
-        "llm_creator": llm_creator,
-        "prompting_technique_creator": prompting_technique_creator,
-    }
-
     try:
-        for event in graph.stream(inputs):
+        for event in graph.stream({"messages": [("user", natural_text)]}):
             iteration_count += 1
             if iteration_count > max_iterations:
                 print("Stopping condition reached: Maximum iterations exceeded")

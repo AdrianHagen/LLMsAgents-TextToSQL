@@ -17,7 +17,7 @@ class ApproachEvaluator:
     against a set of target queries using specified evaluation methods.
 
     Attributes:
-        approach (Callable[[str], str]):
+        approach (Callable[[str, str, str, str], str]):
             The function or callable that generates a predicted query from input text.
         input_texts (List[str]):
             A list of input texts for which queries will be generated.
@@ -36,7 +36,10 @@ class ApproachEvaluator:
     """
 
     def __init__(
-        self, run_config: dict, question_ids: List[int], approach: Callable[[str], str]
+        self,
+        run_config: dict,
+        question_ids: List[int],
+        approach: Callable[[str], str],
     ):
         """
         Initializes the ApproachEvaluator with the provided approach, inputs, and targets.
@@ -44,7 +47,7 @@ class ApproachEvaluator:
         Args:
             run_config (dict): The configuration for the run.
             question_ids (List[int]): The list of query IDs to filter the data.
-            approach (Callable[[str], str]): A function or callable that generates a query from input text.
+            approach (Callable[[str, str, str, str], str]): A function or callable that generates a query from input text.
 
         Raises:
             AssertionError: If the lengths of input_texts and target_queries do not match.
@@ -109,7 +112,7 @@ class ApproachEvaluator:
             self.question_ids, self.input_texts, self.target_queries
         ):
             predicted_query, database, feedbacks, errors, run_status = self.approach(
-                input_text
+                input_text, target_query, database, feedbacks
             )
             is_correct = [
                 1 if evaluation_function(database, predicted_query, target_query) else 0
