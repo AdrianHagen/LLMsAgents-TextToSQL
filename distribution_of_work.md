@@ -1,10 +1,12 @@
 # Distribution of work
-Team members:
+
+## Team members
 - Adrian Hagen, ILIAS: adhagen, matriculation number: S2115311
 - Maximilian Abrams, ILIAS: mabrams, matriculation number: S2117897
 - Patricia Paskuda, ILIAS: ppaskuda, matriculation number: 2119717
 - Yannik Hahn, ILIAS: yahahn, matriculation number: 2112929
-- ~~Kilian Ebi~~
+
+## Tasks
 
 ### Developing an agentic approach and architecture for the agentic approach
 - adhagen
