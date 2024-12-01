@@ -97,7 +97,6 @@ def select_relevant_database(state: State):
     return state
 
 
-# TODO - Include database information in the prompt and see how the model performs
 def select_relevant_tables(state: State):
     tables = list(state["relevant_tables"].keys())
     original_question = state["original_question"]
@@ -110,30 +109,26 @@ def select_relevant_tables(state: State):
             "feedback_trace": json.dumps(state["feedbacks"]),
         }
     )
-    raw_response = llm.invoke(prompt).content
-    # Sometimes the LLM starts the response with some extra text, so we remove it
-    processed_response = raw_response[
-        raw_response.find("{") : raw_response.rfind("}") + 1
-    ].strip()
+    response = llm.invoke(prompt).content
+    # response may look like: {"tables": ["Patient", "Examination"]}
 
     try:
         # Parse the JSON response
-        response_json = json.loads(processed_response)
+        response_json = json.loads(response)
         relevant_tables = response_json.get("tables", [])
         # Set the elements in the tables part of the JSON as the keys of the state["relevant_tables"] dict
-        state["relevant_tables"] = {table: "" for table in relevant_tables}
+        state["relevant_tables"] = {table: {} for table in relevant_tables}
     except json.JSONDecodeError as e:
         print(
             f"""Orchestrator Agent: Failed to decode JSON response: {e}, 
-            raw Response: {raw_response}, 
-            processed Response: {processed_response}"""
+            response: {response}"""
         )
         state["relevant_tables"] = {}
 
     return state
 
 
-def get_table_column_names(state: State):
+def get_table_column_names_descriptions(state: State):
     state["relevant_tables"] = retrieve_column_names(
         state["relevant_database"], list(state["relevant_tables"].keys())
     )
@@ -178,7 +173,9 @@ def final_result(state: State):
 graph_builder.add_node("initialize_state", initialize_state)
 graph_builder.add_node("select_relevant_database", select_relevant_database)
 graph_builder.add_node("select_relevant_tables", select_relevant_tables)
-graph_builder.add_node("get_table_column_names", get_table_column_names)
+graph_builder.add_node(
+    "get_table_column_names_descriptions", get_table_column_names_descriptions
+)
 graph_builder.add_node("creator_agent", create_sql_query)
 graph_builder.add_node("fixer_agent", fix_sql_query)
 graph_builder.add_node("feedback_agent", feedback_sql_query)
@@ -187,8 +184,8 @@ graph_builder.add_node("final_result", final_result)
 graph_builder.add_edge(START, "initialize_state")
 graph_builder.add_edge("initialize_state", "select_relevant_database")
 graph_builder.add_edge("select_relevant_database", "select_relevant_tables")
-graph_builder.add_edge("select_relevant_tables", "get_table_column_names")
-graph_builder.add_edge("get_table_column_names", "creator_agent")
+graph_builder.add_edge("select_relevant_tables", "get_table_column_names_descriptions")
+graph_builder.add_edge("get_table_column_names_descriptions", "creator_agent")
 graph_builder.add_conditional_edges(
     "creator_agent",
     validate_sql_query_syntax,
@@ -267,6 +264,7 @@ def create_sql_from_natural_text(natural_text: str, max_iterations: int = 20):
                                 value["relevant_database"],
                                 value.get("feedbacks", []),
                                 value.get("errors", []),
+                                "max_iterations_exceeded",
                             )
 
             for _, value in event.items():
@@ -277,12 +275,13 @@ def create_sql_from_natural_text(natural_text: str, max_iterations: int = 20):
                             value["relevant_database"],
                             value.get("feedbacks", []),
                             value.get("errors", []),
+                            "exited_normally",
                         )
     except Exception as e:
         print(f"Orchestrator Agent: An error occurred: {e}")
-        return "", "", [], []
+        return "", "", [], [], "error"
 
-    return "Final Query was not generated", "", [], []
+    return "Final Query was not generated", "", [], [], "error"
 
 
 if __name__ == "__main__":
