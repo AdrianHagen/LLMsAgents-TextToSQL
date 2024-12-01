@@ -1,0 +1,11 @@
+{
+    "k_shot_prompting_creator_agent": 2,
+    "k_shot_prompting_fixer_agent": 1,
+    "k_shot_prompting_feedback_agent": 2,
+    "k_shot_prompting_select_relevant_database": 0,
+    "k_shot_prompting_select_relevant_tables": 2,
+    "llm_orchestrator": "gpt4o",
+    "llm_fixer": "gpt4o",
+    "llm_feedback": "gpt4o",
+    "llm_temperature": 0
+}
