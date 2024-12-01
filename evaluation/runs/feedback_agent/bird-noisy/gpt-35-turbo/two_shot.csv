@@ -1,0 +1,221 @@
+question_id,is_correct,difficulty,successful_run,feedback,noised
+1102,True,moderate,True,No changes needed. The query is accurate.,False
+1165,True,moderate,True,No changes needed. The query is accurate.,False
+204,True,simple,True,No changes needed. The query is accurate.,False
+1078,True,simple,False,LLM Failure,True
+692,True,moderate,True,No changes needed. The query is accurate.,False
+1526,True,challenging,True,"The query did not return any result, but there should be a consumption decrease rate. The query seems to have incorrect filtering or aggregation logic.",True
+1021,True,simple,False,LLM Failure,True
+1090,True,simple,True,"The query result does not provide the long passing score of the oldest player. The query is fetching the long passing scores of the first 890 players in ascending order of their birthdays. To get the long passing score of the oldest player, the query should fetch the long passing score of the player with the earliest birthday.",True
+1341,False,simple,False,LLM Failure,False
+53,False,simple,True,"The query result does not correctly answer the question. The result shows the number of test takers for each school in Fresno, but the original question asks for the total number of test takers at the schools in Fresno. The query should include an aggregation function, such as SUM(), to calculate the total number of test takers. Additionally, the query should specify the condition that the mailing city address is in Fresno, not just the mail city. The updated query should be:
+
+SELECT SUM(T1.NumTstTakr) FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode WHERE T2.MailCity LIKE '%Fresno%';",False
+220,True,challenging,False,LLM Failure,True
+679,True,simple,True,"The query did not return the post with the highest score. The query uses the wrong ordering (ASC instead of DESC) and limits the result to 121 records. Additionally, there is a join with the 'users' table that is unnecessary for this question.",True
+733,True,moderate,True,"The query did not return the correct result. The query is joining the 'superhero' table with the 'publisher' and 'colour' tables, but it is using incorrect conditions in the JOIN and WHERE clauses. The condition 'T2.publisher_name = 'banana'' does not match the publisher name mentioned in the original question, and the condition 'T3.colour = 'dragonfly'' does not match the eye color mentioned in the original question.",True
+1408,True,simple,True,"The query result is incorrect. The query is filtering for the 'expense_description' field instead of the 'category' field. Additionally, the query is filtering for 'banana' instead of 'Parking'.",True
+251,True,moderate,False,LLM Failure,True
+268,False,challenging,False,LLM Failure,False
+66,True,simple,True,No changes needed. The query is accurate.,False
+893,True,simple,True,No changes needed. The query is accurate.,False
+1029,True,moderate,True,"The query result does not answer the original question. The query retrieves the buildUpPlaySpeed values of the top 131 teams in ascending order. However, the original question asks for the buildUpPlaySpeed values of the top 4 teams with the highest buildUpPlaySpeed.
+To improve the query, you need to modify the ORDER BY clause to sort the buildUpPlaySpeed values in descending order and add a LIMIT 4 to retrieve only the top 4 teams.",True
+883,False,simple,False,LLM Failure,False
+477,False,challenging,False,LLM Failure,False
+1195,True,moderate,True,"The query did not return any results, but there should be female patients with a PLT greater than 400 who have been diagnosed with SLE. Check if the table names and column names are correct. Also, verify if the condition for SLE diagnosis is accurate.",True
+113,False,simple,False,LLM Failure,False
+943,False,moderate,True,No changes needed. The query is accurate.,True
+1495,True,simple,True,No changes needed. The query is accurate.,False
+1236,False,challenging,False,LLM Failure,False
+1474,True,moderate,True,"The query did not return the correct result. The query is not filtering by the year 2011, and the ordering is incorrect. It should be ordered in descending order of gas consumption, not ascending order of average consumption. The query should also include the customer's name, not just the ID.",True
+1279,False,moderate,True,No changes needed. The query is accurate.,True
+279,False,simple,True,"The query did not return any results, but there should be a label for bond ID TR001_10_11. Check if the table and column names are correct.",False
+1050,False,simple,True,No changes needed. The query is accurate.,True
+879,False,moderate,False,LLM Failure,False
+1300,False,moderate,False,LLM Failure,False
+1476,False,challenging,True,No changes needed. The query is accurate.,True
+674,True,simple,False,LLM Failure,True
+1227,True,moderate,True,"The query did not return any results, indicating that there may be an issue with the filtering or joining of tables. Check the conditions used in the WHERE clause and the join condition in the INNER JOIN statement.",True
+1291,False,moderate,True,No changes needed. The query is accurate.,True
+969,True,simple,True,The query did not return the correct result. The filtering conditions for nationality and date of birth are incorrect.,True
+1137,True,simple,True,"The query did not return the correct result. The calculation in the query seems incorrect, resulting in a percentage of 0.0. Additionally, the table name 'Player_Attributes' does not match the database name 'european_football_2'.",True
+1290,True,simple,False,LLM Failure,True
+310,False,moderate,True,No changes needed. The query is accurate.,True
+390,True,simple,True,"The query did not return the expected result. The 'colors' and 'format' fields are not correctly selected. Also, the query is missing the condition to filter by ID.",True
+1174,True,moderate,True,"The query did not return any results. There may be issues with the join condition and the date filtering. Also, the calculation of age seems incorrect.",True
+760,True,challenging,True,The query did not return the correct result. The calculation for the percentage of heroes published by Marvel Comics is incorrect. The query should count the number of heroes published by Marvel Comics within the specified height range and divide it by the total count of heroes within the same height range.,True
+1154,False,simple,False,LLM Failure,False
+776,True,simple,True,No changes needed. The query is accurate.,False
+219,False,challenging,True,No changes needed. The query accurately calculates the percentage of carcinogenic molecules in triple type bonds.,True
+9,True,simple,True,No changes needed. The query is accurate.,False
+34,True,moderate,True,No changes needed. The query is accurate.,False
+494,False,challenging,False,LLM Failure,False
+152,True,moderate,True,No changes needed. The query is accurate.,False
+1142,True,simple,True,"The query did not return the correct result. The query is joining the 'League' and 'Match' tables, but it is not filtering for the Italian Serie A league and the 2015-2016 season. Additionally, the table aliases used in the query ('t1' and 't2') do not match the table names mentioned in the question ('League' and 'Match').",True
+1498,True,simple,True,"The query result is not correct. The query is currently calculating the sum of consumption for each month in 2012 and returning the lowest value. However, the original question asks for the highest monthly consumption in 2012. To fix this, the query should be modified to order the results in descending order and select the highest value instead of the lowest.",True
+202,True,simple,True,No changes needed. The query is accurate.,False
+192,True,moderate,True,No changes needed. The query is accurate.,False
+935,True,simple,True,No changes needed. The query is accurate.,False
+1150,False,moderate,True,No changes needed. The query is accurate.,True
+759,True,simple,False,LLM Failure,True
+1336,True,simple,False,LLM Failure,True
+1367,False,simple,False,LLM Failure,False
+1177,False,simple,False,LLM Failure,False
+427,True,moderate,True,No changes needed. The query is accurate.,False
+790,True,moderate,True,"The query did not return a valid result. The subquery for calculating Emil Blonsky's weight and Charles Chandler's weight is incorrect. Instead of using 'LIKE' in the subquery, use 'WHERE full_name = 'Emil Blonsky' and 'WHERE full_name = 'Charles Chandler'' to accurately retrieve their weights.",True
+459,True,moderate,False,LLM Failure,True
+983,True,simple,False,LLM Failure,True
+1456,True,moderate,False,LLM Failure,True
+958,True,moderate,False,LLM Failure,True
+847,False,simple,False,LLM Failure,False
+512,True,simple,True,No changes needed. The query is accurate.,False
+347,True,moderate,True,No changes needed. The query is accurate.,False
+489,False,simple,False,LLM Failure,False
+159,True,simple,True,No changes needed. The query is accurate.,False
+648,True,simple,True,No changes needed. The query is accurate.,False
+1115,True,challenging,True,No changes needed. The query is accurate.,False
+1205,True,moderate,True,The query result does not provide a clear answer to the original question. The query only returns a list of zeros without indicating whether the patient's uric acid was within a normal range or not.,True
+1458,True,moderate,True,No changes needed. The query is accurate.,False
+1405,False,moderate,False,LLM Failure,False
+442,True,simple,True,No changes needed. The query is accurate.,False
+218,True,challenging,True,The query did not return any valid result. The join condition and filtering criteria seem incorrect. The query should count the number of molecules without fluorine and calculate the percentage.,True
+656,True,simple,False,LLM Failure,True
+191,True,simple,True,"The query result is incorrect. The query is counting the number of loan accounts with a duration of 928 months and a frequency of 'POPLATEK TYDNE', instead of 24 months and weekly issuance of statement. The duration and frequency conditions in the WHERE clause should be updated.",True
+938,False,moderate,False,LLM Failure,False
+1120,True,moderate,True,No changes needed. The query is accurate.,False
+1274,True,moderate,True,"The query result is correct, but the query itself is incorrect. The 'OR' operator is not used correctly in the WHERE clause. It should be 'T2.SSB = 'negative' OR T2.SSB = '935''. Additionally, the condition 'T1.Symptoms IS NOT NULL' should be placed inside the parentheses after the OR operator.",True
+298,True,moderate,True,No changes needed. The query is accurate.,False
+841,True,simple,True,No changes needed. The query is accurate.,False
+567,True,simple,True,"The query result is incorrect. It should return the number of posts owned by the user with the display name 'Tiago Pasqualini', but it returned a count of 0. Check if the 'DisplayName' field is correctly filtered and if the join condition is accurate.",True
+27,True,moderate,False,LLM Failure,True
+1126,False,simple,False,LLM Failure,False
+333,True,simple,True,The query result is incorrect. The query is counting the number of atoms with the element 'dragonfly' instead of 'carbon'.,True
+542,True,simple,True,No changes needed. The query is accurate.,False
+1360,True,moderate,True,"The query did not return any results, but there should be a percentage value. The query seems to have incorrect logic for calculating the budget percentage. Also, the join condition between the 'budget' and 'event' tables may not be accurate.",True
+829,False,challenging,True,No changes needed. The query correctly calculates the difference in the number of superheroes created by DC Comics and Marvel Comics.,True
+156,True,simple,False,LLM Failure,True
+414,True,simple,True,No changes needed. The query is accurate.,False
+1019,True,moderate,True,No changes needed. The query is accurate.,False
+1247,False,challenging,True,No changes needed. The query is accurate.,True
+789,True,simple,True,No changes needed. The query is accurate.,False
+1416,True,simple,True,"The query result is incorrect. It returned 0 members, but there should be some members with the Medium size of tee shirt in the Business major. The query may have incorrect filtering or join conditions.",True
+1314,True,simple,True,No changes needed. The query is accurate.,False
+1379,True,simple,True,No changes needed. The query is accurate.,False
+1093,True,moderate,True,"The query result is incorrect because the filtering condition for the birth year is not correctly specified. The query should use the '<' operator instead of comparing the birth year to a string value. Additionally, the query should use the AVG() function instead of the SUM() and COUNT() functions to calculate the average overall rating.",True
+89,True,moderate,True,"The query result is incorrect. The query should count the number of accounts that choose issuance after transaction and are staying in the East Bohemia region. However, the current query does not include the condition for 'issuance after transaction' and 'East Bohemia region'.",True
+1209,True,moderate,False,LLM Failure,True
+784,False,simple,False,LLM Failure,False
+717,False,simple,False,LLM Failure,False
+1018,True,simple,True,"The query did not return any results, indicating that there may be an issue with the filtering conditions or the join condition. Check if the driver's name is correctly specified and if the join condition is accurate.",True
+948,True,simple,True,No changes needed. The query is accurate.,False
+549,True,simple,True,No changes needed. The query is accurate.,False
+672,True,moderate,True,"The query did not return any results, but there should be users in the United Kingdom whose posts have a total favorite amount of 4 or more. The issue may be with the filtering condition or the join condition.",True
+1229,True,moderate,True,"The query result is incorrect. The query is missing the condition to check if the TG level is beyond the normal range. Additionally, the age calculation is incorrect.",True
+426,True,simple,False,LLM Failure,True
+1386,True,simple,True,No changes needed. The query is accurate.,False
+916,False,simple,False,LLM Failure,False
+1057,True,moderate,True,No changes needed. The query is accurate.,False
+536,True,simple,True,"The query did not return the expected result. There seems to be an issue with the filtering conditions. The 'CreationDate' field should be filtered for years after 2013, not 'apple'. Additionally, the condition for 'Views' should be 'Views > 10', not 'Views > 362'.",True
+1224,False,simple,False,LLM Failure,False
+651,False,simple,False,LLM Failure,False
+401,True,moderate,True,"The query did not return any results, but there should be legendary frame effect cards that are only available in online game variations. Check the filtering and aggregation logic.",True
+535,True,simple,True,No changes needed. The query is accurate.,False
+728,True,moderate,False,LLM Failure,True
+558,True,simple,True,The query did not return the correct result. The 'CreationDate' field is not correctly filtered. It should be filtered by '2010/7/19'.,True
+667,True,simple,False,LLM Failure,True
+1292,True,challenging,True,No changes needed. The query is accurate.,False
+1190,True,challenging,True,The query did not return any results. There might be an issue with the filtering conditions in the WHERE clause. Check if the 'U-PRO' field is correctly filtered and if the range values are accurate.,True
+678,True,simple,True,No changes needed. The query is accurate.,False
+295,True,simple,True,No changes needed. The query is accurate.,False
+721,False,simple,True,No changes needed. The query is accurate.,True
+1391,True,simple,True,The query did not return a valid result. The SQL query is using incorrect table and column names. Check the table and column names in the query.,True
+54,False,simple,False,LLM Failure,False
+1441,True,moderate,True,No changes needed. The query is accurate.,False
+473,True,moderate,False,LLM Failure,True
+1038,False,moderate,True,No changes needed. The query is accurate.,True
+1124,False,moderate,False,LLM Failure,False
+1045,False,simple,False,LLM Failure,False
+1131,True,simple,True,No changes needed. The query is accurate.,False
+920,True,simple,True,No changes needed. The query is accurate.,False
+1324,True,moderate,True,"The query did not return any results, but there should be a value for the average attendance of meetings in 2020. Check the filtering conditions and the join condition in the query.",True
+823,True,moderate,True,No changes needed. The query is accurate.,False
+92,True,simple,True,"The query did not return the correct result. The condition in the WHERE clause for the average salary range is incorrect. It should be 'T2.A11 BETWEEN 6000 AND 10000'. Additionally, the condition for the gender is incorrect, it should be 'T1.gender = 'F''.",True
+1145,False,simple,False,LLM Failure,False
+1076,True,challenging,True,The query did not return any results. There might be an issue with the join condition or the player names used in the query.,True
+52,True,simple,True,"The query did not return any results, but there should be schools with total SAT scores greater or equal to 1500 in the mailing city of Lakeport. The issue may be with the incorrect filtering on the 'MailCity' field or the calculation of the total SAT scores.",True
+1161,True,challenging,True,No changes needed. The query is accurate.,False
+458,True,simple,True,No changes needed. The query is accurate.,False
+342,True,simple,True,No changes needed. The query is accurate.,False
+1062,True,moderate,True,No changes needed. The query is accurate.,False
+82,True,simple,True,"The query did not return any results, but there should be a grade span offered in the school with the highest longitude. The query is not correctly filtering the schools based on longitude.",True
+593,False,simple,True,No changes needed. The query accurately counts the number of users from New York with the specified badges.,True
+615,True,moderate,True,No changes needed. The query accurately calculates the percentage of users who are teenagers among those who obtained the 'Organizer' badges.,False
+161,True,simple,False,LLM Failure,True
+353,False,simple,False,LLM Failure,False
+393,True,simple,True,"The query did not return the expected result. There might be an issue with the filtering condition. It looks like the query is checking for cards designed by an artist named 'falcon' instead of 'John Avon'. Additionally, the query is checking for the absence of both 'cardKingdomId' and 'cardKingdomFoilId', which might not accurately represent the condition of the foil being non-powerful. It would be better to explicitly specify the condition for the foil being non-powerful.",True
+1226,True,simple,True,No changes needed. The query is accurate.,False
+1044,False,simple,False,LLM Failure,False
+963,True,moderate,True,"The query did not return the expected result. The condition for obtaining the laptime less than 02:00.00 is not correctly implemented. Instead of concatenating and converting substrings of the time column, it would be more accurate to use the TIME function to convert the laptime to a time format and compare it to the target time.",True
+762,True,simple,False,LLM Failure,True
+420,True,simple,True,The query result is not correct. The query is not filtering the cards correctly based on the given conditions.,True
+1501,True,moderate,True,No changes needed. The query is accurate.,False
+609,True,simple,True,No changes needed. The query is accurate.,False
+1089,True,simple,True,"The query did not return the correct result. The count should represent the number of matches held in Belgium in the 2008/2009 season, but the result is 0. Check if the conditions for filtering the country and season are correctly implemented.",True
+31,True,moderate,True,No changes needed. The query correctly calculates the eligible free rate of the 10th and 11th schools with the highest enrollment for students in grades 1 through 12.,False
+743,True,challenging,True,"The query result does not accurately answer the original question. The query calculates the percentage of superheroes who act in their own self-interest or make decisions based on their own moral code, but it does not indicate how many of the said superheroes were published by Marvel Comics. The JOIN with the 'publisher' table is not necessary for this calculation.",True
+1491,False,simple,True,No changes needed. The query is accurate.,True
+960,True,moderate,True,"The query did not return any results, but there should be a value for the average fastest lap speed. Check if the race details are correctly filtered.",True
+892,True,moderate,True,No changes needed. The query is accurate.,False
+171,False,moderate,True,No changes needed. The query is accurate.,True
+579,False,simple,False,LLM Failure,False
+1133,True,simple,True,No changes needed. The query is accurate.,False
+1266,True,moderate,False,LLM Failure,True
+452,False,simple,False,LLM Failure,False
+241,True,simple,True,The query result does not answer the original question correctly. The query is counting the number of molecules with the label 'cherry' instead of the number of molecules that are not carcinogenic.,True
+748,True,simple,True,No changes needed. The query is accurate.,False
+904,False,moderate,False,LLM Failure,False
+1277,False,moderate,True,No changes needed. The query is accurate.,True
+817,False,moderate,False,LLM Failure,False
+703,False,simple,True,No changes needed. The query is accurate.,True
+435,False,simple,True,"The query result correctly lists the card IDs with a black border color. However, the query does not provide the count of cards with a black border color as requested in the original question.",False
+491,False,simple,False,LLM Failure,False
+361,True,simple,True,"The query did not return the correct result. The 'status' field should be filtered on 'restricted' instead of 'banana'. Additionally, the 'isTextless' field should be filtered on '1' instead of '0'.",True
+977,True,simple,True,"The query did not return the expected result. The query is calculating the average of a conditional expression, but it should be counting the number of disqualified finishers. Additionally, the race number filtering is incorrect.",True
+1211,True,moderate,True,No changes needed. The query is accurate.,False
+1357,True,simple,True,No changes needed. The query is accurate.,False
+1390,False,moderate,True,No changes needed. The query is accurate.,True
+665,True,moderate,True,"The query result is incorrect. The query is not accurately calculating the average monthly number of links created in 2010 for posts with no more than 2 answers. There are several issues with the query:
+
+1. The condition 'T2.AnswerCount <= 212' is incorrect. It should be 'T2.AnswerCount <= 2' to filter posts with no more than 2 answers.
+
+2. The function 'STRFTIME('dragonfly', T1.CreationDate)' is not valid. It should be 'strftime('%Y', T1.CreationDate)' to extract the year from the 'CreationDate' column.
+
+3. The condition 'strftime('%Y', T1.CreationDate) = '947'' is incorrect. It should be 'strftime('%Y', T1.CreationDate) = '2010'' to filter links created in 2010.
+
+To improve the query, you can use the following updated query:
+
+SELECT AVG(link_count) FROM (
+    SELECT COUNT(T1.Id) AS link_count
+    FROM postLinks AS T1
+    INNER JOIN posts AS T2 ON T1.PostId = T2.Id
+    WHERE T2.AnswerCount <= 2
+    AND strftime('%Y', T1.CreationDate) = '2010'
+    GROUP BY strftime('%m', T1.CreationDate)
+) AS subquery;",True
+686,True,simple,True,No changes needed. The query is accurate.,False
+1039,False,simple,True,No changes needed. The query is accurate.,True
+40,True,moderate,False,LLM Failure,True
+1499,True,simple,True,"The query result does not answer the original question accurately. The query is calculating the average monthly consumption for customers who use euro as their currency, but the question asks for the biggest monthly consumption. The SELECT statement should include the MAX function instead of AVG to return the maximum monthly consumption. Additionally, the query should not be grouped by T1.CustomerID as it is not necessary for finding the maximum monthly consumption.",True
+713,True,simple,True,No changes needed. The query is accurate.,False
+1530,True,simple,False,LLM Failure,True
+1254,True,moderate,True,No changes needed. The query is accurate.,False
+479,True,moderate,True,No changes needed. The query is accurate.,False
+1340,True,moderate,True,"The query result does not accurately calculate the difference of the total amount spent in all events by the Student_Club in 2019 and 2020. The query seems to be incorrectly using the SUBSTR function to filter the event_date column. Also, the JOIN condition between the event and budget tables seems incorrect.",True
+877,True,moderate,False,LLM Failure,True
+1473,True,moderate,True,"The query did not return any results, but there should be an average monthly consumption value for customers in SME for the year 2013. Check the filtering conditions and join condition in the query.",True
+432,True,moderate,True,"The query result is incorrect. The query is selecting the ID of the set with the smallest base set size in Russian. However, the question asks for the set with the largest overall number of cards in Russian. The query should be modified to select the set with the largest base set size in Russian.",True
+1459,False,simple,False,LLM Failure,False
+467,True,simple,True,No changes needed. The query is accurate.,False
+61,True,simple,True,The query did not return the correct result. The conditions in the WHERE clause are incorrect. The query should filter for schools located in the city of Hickman and owned by the Elementary School District.,True
+227,False,simple,True,"The query result does not answer the question accurately. The query calculates the percentage of molecules that have a label of '+' as the percentage of all molecules. However, the question asks for the percentage of molecules that are carcinogenic. It is important to clarify whether the 'label' field represents carcinogenicity or if there is another field that should be used for this calculation.",False
