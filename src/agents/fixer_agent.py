@@ -1,8 +1,6 @@
 import json
 
 from langchain.prompts import PromptTemplate
-from langchain_anthropic import ChatAnthropic
-from langchain_openai import ChatOpenAI
 from langchain_core.language_models.chat_models import BaseChatModel
 
 from state_types import FixerResponse, State
@@ -18,10 +16,8 @@ class FixerAgent:
         else:
             self.template = template
         self.prompt = PromptTemplate.from_template(self.template)
-        if llm is None:
-            self.llm = ChatAnthropic(model="claude-3-5-sonnet-latest")
-        else:
-            self.llm = llm
+
+        self.llm = llm
 
     def analyse_incorrect_query(self, state: State):
         original_question = state["original_question"]
@@ -51,7 +47,8 @@ class FixerAgent:
             }
         )
 
-        response = self.llm.invoke(p).content
+        response = self.llm.invoke(p).content.replace("```json\n", "").replace("```", "")
+        print(response)
         response = response.replace("Output:", "").strip()
 
         try:

@@ -158,7 +158,10 @@ TWO_SHOT = """
         SELECT Label FROM trans WHERE trans_id = 'TR001_10_11' AND type = 'transaction';
 
         -------------------------------------------------------------------------------
-
+        
+        Final Notes:
+        If the last entry in the feedback_trace contains 'is_correct': False, YOU MUST UPDATE THE QUERY. You may choose the updated query from the feedback_trace or generate a new one.
+        
         Input:
 
         {{
@@ -167,6 +170,8 @@ TWO_SHOT = """
             "feedback_trace": "{feedback_trace}",
             "error_trace": "{error_trace}"
         }}
+        
+        UPDATE THE QUERY
         """
 
 FOUR_SHOT = """
