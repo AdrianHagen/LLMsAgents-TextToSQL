@@ -1,0 +1,158 @@
+question_id,is_correct,difficulty,successful_run,feedback,noised
+156,True,simple,False,LLM Failure,True
+1084,True,challenging,True,"The query has several issues:
+1. The year comparison is incorrect. '825' is being used instead of '1986'.
+2. The condition for players remaining in position during attack is not correctly represented. We should look for players with 'high' attacking work rate, not defensive.
+3. The birthday comparison should use the full date, not just the year.
+4. The question asks about players born before 1986, so we should use '<' operator, not '>'.
+5. The INNER JOIN is correct, but we might want to consider using LEFT JOIN to include all players, even if they don't have attributes recorded.",True
+347,False,moderate,False,LLM Failure,False
+1391,True,simple,True,"The query is incorrect for several reasons:
+1. It's using incorrect major names ('igloo' and 'dragonfly') instead of 'finance' and 'physics'.
+2. The result is null, which suggests that either there are no students with these majors or there's an error in the query.
+3. The question asks for the ratio between finance and physics majors, but the query structure is correct for this calculation.",True
+733,True,moderate,True,"The query is not correctly answering the original question due to several issues:
+1. The publisher name is incorrectly set to 'banana' instead of 'Marvel Comics'.
+2. The eye color is set to 'dragonfly' instead of 'gold'.
+3. The table and column names might be incorrect, as 'publisher_name' and 'colour' are used instead of potentially more standard names.
+These errors result in a count of 0, which is likely incorrect for Marvel Comics' gold-eyed superheroes.",True
+672,True,moderate,True,"The query has several issues that need to be addressed:
+1. The Location filter is incorrect. It's using 'igloo' instead of 'United Kingdom'.
+2. The FavoriteCount threshold is set to 310, which is much higher than the requested 4 in the question.
+3. The query doesn't account for the total favorite amount across all posts for each user.
+4. The INNER JOIN might exclude users who have no posts, which may or may not be intended.",True
+259,True,simple,True,"The query is incorrect for several reasons:
+1. The bond_type 'elephant' is likely a mistake. Bond types are usually described as 'single', 'double', 'triple', etc.
+2. The question asks about single bond molecules, but the query is filtering for 'elephant' bond type.
+3. The result of 0 is suspicious and doesn't answer the question correctly.
+4. The query structure is overly complex for the question being asked.",True
+1154,True,simple,True,"The query correctly answers the original question. It retrieves the sex, birthday, examination date, and symptoms for the patient with ID 163109. The result shows that the patient is female (F), born on 1950-10-16, had an examination on 1997-07-01, and has the symptom 'CNS lupus'. All requested information is present and accurately matches the question.",False
+1386,True,simple,True,"The query correctly answers the original question. It calculates the total expense for the 'Yearly Kickoff' event by joining the event, budget, and expense tables, and then summing up the costs associated with that specific event. The result of 449.13 represents the total expense for the Yearly Kickoff event.",False
+1229,True,moderate,True,"The query has several issues that need to be addressed:
+1. The STRFTIME function is used incorrectly. It should be used to format dates, not for date arithmetic.
+2. The comparison for age is not correctly implemented.
+3. The normal range for triglycerides is not accurately represented.
+4. The query returns 0, which is likely incorrect as there should be patients meeting these criteria.",True
+161,True,simple,True,"The query is close to being correct, but there's an error in the WHERE clause. The client_id in the query (132) does not match the client_id in the original question (13539). This mismatch will lead to incorrect results.",True
+458,False,simple,True,"The query does not accurately answer the original question. There are several issues:
+1. The query counts cards, not artists.
+2. The availability check is incorrect. It should look for both 'arena' and 'mtgo' separately, not as a combined string.
+3. The query doesn't join with the artists table, which is necessary to count unique artists.
+4. The CASE statement is unnecessary for this query.",False
+1120,False,moderate,False,LLM Failure,False
+27,True,moderate,False,LLM Failure,True
+487,True,challenging,True,"The query has several issues and does not correctly answer the original question. The main problems are:
+1. The query is filtering for the set 'horizon' instead of 'Coldsnap'.
+2. The logic for determining 'incredibly powerful' cards is unclear and seems arbitrary.
+3. The calculation does not represent a percentage.
+4. The query returns NULL, indicating a problem with the data or the calculation.",True
+361,True,simple,True,"The query is incorrect for several reasons:
+1. The status in the WHERE clause is set to 'banana', which is not a valid legality status. It should be 'Restricted'.
+2. The question asks for cards with text boxes, but the query checks for cards that are not textless (isTextless = 0). This might not accurately represent cards with text boxes.
+3. The COUNT(DISTINCT T1.id) is correct as we want to count unique cards.
+4. The JOIN between cards and legalities tables is correct.",True
+679,True,simple,False,LLM Failure,True
+839,True,simple,False,LLM Failure,True
+1379,True,simple,True,"The query correctly answers the original question. It counts the number of events with type 'Meeting' that occurred in 2020. The result shows that there were 9 meeting events held in 2020. The query uses appropriate filtering on the event type and year, and the COUNT function to get the total number of such events.",False
+1182,True,moderate,True,"The query has several issues that need to be addressed:
+1. The diagnosis 'elephant' in the subquery is incorrect. It should be 'SJS' as per the question.
+2. The STRFTIME function is used incorrectly. It should be STRFTIME('%Y', Date) to extract the year.
+3. The main query is correct in counting the laboratory tests, but due to the errors in the subquery, it's likely returning no results.
+4. The date format in the subquery should be checked to ensure it matches the database format.",True
+53,False,simple,True,"The query returns individual NumTstTakr values for each school in Fresno, but it doesn't provide the total count of test takers as requested in the original question. We need to sum up these values to get the total number of test takers across all schools in Fresno.",False
+202,True,simple,True,"The query correctly answers the original question. It counts the number of triple bonds by selecting bonds where the bond_type is '#', which is a common representation for triple bonds in chemical notation. The result shows that there are 6 triple bonds in the database.",False
+1246,True,moderate,True,"The query has several issues that need to be addressed:
+1. The condition for abnormal activated partial prothrombin time (APTT) is incorrect. The query uses APTT > 559, which is likely too high for a normal range.
+2. The Thrombosis condition is set to 776, which doesn't make sense for a boolean condition (presence or absence of thrombosis).
+3. The query is counting patients WITH thrombosis instead of those WITHOUT thrombosis as per the original question.
+4. The result [[0]] suggests no patients meet the criteria, which is unlikely and indicates a problem with the query logic.",True
+107,True,simple,False,LLM Failure,True
+1089,True,simple,False,LLM Failure,True
+279,False,simple,False,LLM Failure,False
+1131,True,simple,True,"The query correctly calculates the average height of Italy players. It joins the Player, Match, and Country tables to filter for Italian players and then calculates the average height. The result of 181.69 cm (approximately 5 feet 11.5 inches) seems reasonable for professional football players.",False
+609,True,simple,True,"The query correctly answers the original question. It counts the number of posts that have a score of exactly 10, which is 741. The SQL query uses the appropriate COUNT function and filters the posts table with the correct condition (Score = 10).",False
+729,True,simple,True,"The query is incorrect for several reasons:
+1. The WHERE clause is filtering for 'apple' as the publisher name, which is not relevant to Marvel Comics.
+2. The result is NULL, indicating that either no rows matched the condition or all height values were NULL.
+3. The question asks specifically about Marvel Comics, but the query doesn't correctly filter for this publisher.",True
+241,True,simple,True,"The query is incorrect and does not answer the original question. There are several issues:
+1. The query is filtering for molecules with a label 'cherry', which is unrelated to carcinogenicity.
+2. The question asks about non-carcinogenic molecules, but the query doesn't address this at all.
+3. The result [[0]] suggests that no molecules match the current criteria, which is likely incorrect given the question context.",True
+717,True,simple,True,"The query correctly retrieves the superpowers of 3-D Man. It joins the necessary tables (superhero, hero_power, and superpower) to fetch the power names for the specific superhero. The result includes Agility, Super Strength, Stamina, and Super Speed, which appear to be a valid list of superpowers for a superhero.",False
+254,True,moderate,False,LLM Failure,True
+467,True,simple,True,"The query correctly answers the original question. It retrieves the base set size for the set named ""Hauptset Zehnte Edition"" by joining the 'sets' and 'set_translations' tables. The result shows that there are 383 cards in the base set of ""Hauptset Zehnte Edition"".",False
+1190,True,challenging,True,"The query has several issues and does not correctly answer the original question:
+1. The logic for normal range of proteinuria (`U-PRO`) is incorrect. The condition `U-PRO > 839 AND U-PRO < 118` is impossible to satisfy.
+2. The uric acid (UA) normal range is not properly defined or used.
+3. The CASE statement is using arbitrary numbers (543 and 636) that don't relate to the question.
+4. The calculation doesn't accurately represent a percentage.
+5. The result is NULL, indicating an error in the query execution.",True
+1076,True,challenging,False,LLM Failure,True
+40,True,moderate,False,LLM Failure,True
+760,True,challenging,False,LLM Failure,True
+218,True,challenging,False,LLM Failure,True
+1044,True,simple,True,"The query correctly answers the original question. It selects the player names from the Player table where the birthday starts with '1970-10', which corresponds to players born in October 1970. The result includes a list of player names, which is exactly what was asked for.",False
+994,True,challenging,False,LLM Failure,True
+1019,True,moderate,True,"The query correctly calculates the average lap time in milliseconds for all lap records set on circuits in Italy. It joins the necessary tables (lapTimes, races, and circuits) to get the required information and filters for races in Italy. The calculation uses SUM(milliseconds) divided by COUNT(lap) to get the average, which is the correct approach.",False
+1097,True,simple,True,"The query is incorrect for several reasons:
+1. The player name in the WHERE clause is 'dragonfly' instead of 'Aaron Lennox'.
+2. The result is NULL, which suggests either the player doesn't exist or there's no data for their crossing attribute.
+3. The query structure is correct, but the player name needs to be updated.",True
+1045,True,simple,True,"The query correctly retrieves the attacking work rate for Franco Zennaro. It joins the Player and Player_Attributes tables using the player_api_id, and filters for the specific player name. The result shows that Franco Zennaro has a 'medium' attacking work rate, which directly answers the original question.",False
+1101,True,moderate,True,"The query has several issues:
+1. The team name in the WHERE clause is 'igloo' instead of 'Parma'.
+2. The calculation of the average is incorrect. AVG() already calculates the average, so dividing by COUNT(T1.id) is unnecessary and will skew the result.
+3. The CAST AS REAL is not necessary as AVG() returns a floating-point number.
+4. The query returns null, which suggests either no matches were found or there's an issue with the data.",True
+721,True,simple,True,"The query is not correctly answering the question. The main issue is in the WHERE clause, where it's filtering for eye color 'igloo' instead of 'blue'. This is likely why the count returned is 0, which doesn't seem accurate for the number of superheroes with blue eyes.",True
+1145,True,simple,True,"The query correctly answers the original question. It retrieves the top 4 leagues with the most games in the 2015-2016 season. The query joins the League and Match tables, filters for the 2015/2016 season, groups by league name, orders by the count of matches in descending order, and limits the result to 4 leagues. The result includes the top leagues as expected: Spain LIGA BBVA, Italy Serie A, France Ligue 1, and England Premier League.",False
+1247,True,challenging,False,LLM Failure,True
+477,True,challenging,True,"The query correctly answers the original question. It returns the artists from the given list who have designed cards in the Coldsnap set. The result shows that Chippy and Jeremy Jarvis have designed cards for this set, while Aaron Miller is not in the result, indicating he hasn't designed a card for Coldsnap. The query uses appropriate joins and filters to get the correct information.",False
+1224,False,simple,False,LLM Failure,False
+651,False,simple,False,LLM Failure,False
+916,False,simple,False,LLM Failure,False
+674,True,simple,False,LLM Failure,True
+1489,True,simple,True,"The query has several issues:
+1. It's using AVG instead of SUM for total consumption.
+2. The Date filter is incorrect. '764' is not a valid date format for May 2013.
+3. The join condition might be incorrect as we're joining customers with yearmonth table.
+4. The yearmonth table likely has separate Year and Month columns instead of a single Date column.",True
+402,True,moderate,True,"The query has several issues and does not correctly answer the original question. Here are the main problems:
+1. The CASE statement in the AVG function is using arbitrary numbers (504, 444, 744) instead of boolean values for isTextless.
+2. The isStorySpotlight condition is using 299 instead of a boolean value.
+3. The query is not listing the IDs of the cards as requested in the question.
+4. The calculation for the percentage is incorrect and unnecessarily complicated.
+5. The query returns null, which doesn't provide any meaningful information.",True
+52,True,simple,True,"The query is not correctly answering the original question due to two main issues:
+1. The city name in the WHERE clause is incorrect. It's using 'banana' instead of 'Lakeport' as specified in the question.
+2. The query structure is correct, joining the satscores and schools tables and calculating the total SAT score, but due to the wrong city name, it's returning 0 results.
+
+To fix this, we need to change 'banana' to 'Lakeport' in the WHERE clause.",True
+711,True,simple,True,"The query does not correctly answer the original question due to several issues:
+1. The Score filter is incorrect. It's set to 282 instead of 0.
+2. The Age filter is incorrect. It's set to 410 instead of 40.
+3. The query is counting distinct comment IDs, but we want to count users.
+4. The JOIN is correct, but the conditions need adjustment.",True
+227,True,simple,True,"The query correctly calculates the percentage of carcinogenic molecules with three decimal places. It counts the number of molecules with a '+' label (indicating carcinogenic) and divides it by the total number of molecules, then multiplies by 100 to get the percentage. The ROUND function is used to limit the result to three decimal places as requested.",False
+204,True,simple,True,The query correctly answers the original question. It counts the number of molecules with IDs between TR000 and TR099 (which represents the first 100 molecules in number order) that are labeled as carcinogenic ('+' label). The result shows that 29 molecules out of the first 100 are carcinogenic.,False
+1498,True,simple,True,"The query is incorrect as it returns the lowest monthly consumption instead of the highest. The ORDER BY clause is using ASC (ascending) order, which gives the minimum value. To get the highest consumption, we need to use DESC (descending) order. Additionally, the LIMIT 1 should be applied after ordering in descending order to get the maximum value.",True
+298,True,moderate,True,"The query correctly calculates the percentage of molecules containing carcinogenic compounds where the element is hydrogen. It joins the atom and molecule tables, filters for hydrogen atoms ('h') and carcinogenic compounds (label = '+'), and calculates the percentage. The result of 17.22% seems reasonable for this type of analysis.",False
+1459,True,simple,True,"The query correctly answers the original question. It retrieves both the major name and the department for Garrett Gerke. The result shows that Garrett Gerke's major is 'Human Development and Family Studies' and it belongs to the 'Human Development and Family Studies Department'. The query uses appropriate joins between the member and major tables, and correctly filters for Garrett Gerke using his first and last name.",False
+1222,True,simple,True,"The query is not correctly answering the question due to two main issues:
+1. The SEX filter is incorrect. It's using 'apple' instead of a proper gender identifier for males.
+2. The creatinine range is only checking for values above or equal to 1.5, which might not be the complete picture of 'out of the normal range'.
+
+To fix these issues:
+1. Replace 'apple' with the correct identifier for male patients (likely 'M' or 'Male').
+2. Define the normal range for creatinine and adjust the WHERE clause to include both low and high out-of-range values.",True
+219,True,challenging,True,"The query result appears to be incorrect. The percentage should be between 0 and 100, but the result is 88.0, which is likely due to a calculation error. The query is multiplying by 132 instead of 100 for the percentage calculation. Additionally, the query is not clearly filtering for carcinogenic molecules or triple bonds as requested in the question.",True
+693,True,simple,True,"The query has several issues and does not correctly answer the original question:
+1. It's counting only the comments, not the posts.
+2. It's ordering by CreationDate in ascending order, which gives the oldest user, not the latest.
+3. The LIMIT 699 seems arbitrary and unnecessary.
+4. It's not considering comments made directly by the user, only those on their posts.
+5. The result (171570) seems unusually high for a single user's activity.",True
+1126,False,simple,False,LLM Failure,False
+1102,False,moderate,False,LLM Failure,False
+893,False,simple,False,LLM Failure,False

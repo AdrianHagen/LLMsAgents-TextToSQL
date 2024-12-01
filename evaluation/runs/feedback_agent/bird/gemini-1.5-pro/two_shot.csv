@@ -1,0 +1,101 @@
+question_id,is_correct,difficulty,successful_run,feedback
+479,True,moderate,True,No changes needed. The query is accurate.
+1057,True,moderate,True,No changes needed. The query accurately calculates the average home team goals using the SUM and COUNT functions after joining the Country and Match tables. It also applies the correct filters for the country and season.
+1367,False,simple,True,"Although the query returned a result, it's not the correct one. The query is grouping and ordering by the major_id and college name, but we want to know the college with the most students. The COUNT aggregation should be applied to a column representing the student (e.g., student_id) and not the college name."
+298,False,moderate,False,LLM Failure
+651,True,simple,True,The query correctly returns the title of the related post.
+1145,True,simple,True,The query accurately returns the top 4 leagues with the most games played in the 2015-2016 season based on the number of matches associated with each league.
+1165,False,moderate,True,"The query returns the difference between the maximum and minimum years in the birthday, not the age gap between the oldest and youngest patients. Additionally, the WHERE clause is filtering for triglyceride values greater than or equal to 200, but the question asks for normal triglyceride levels."
+494,False,challenging,True,"The query does not accurately answer the question. It does not filter by artist, instead, it only filters by rulings. Also, there is no information about degraded properties or values in the database, only a content warning flag."
+1126,False,simple,True,"The query is filtering by 'home_player_1' only, so it's missing players in other positions. It should consider all player positions."
+1292,False,challenging,True,"The query does not consider the normal range of uric acid levels. It selects the female patient with the highest uric acid level overall, not within the normal range. The normal range for uric acid can vary, but it's important to include that range in the query. "
+9,True,simple,True,The query accurately joins the tables 'satscores' and 'frpm' based on the common column and applies the filter conditions correctly to retrieve the count of schools meeting the specified criteria.
+152,False,moderate,True,"Although the query successfully executes, it doesn't meet the specified criteria. It seems to be calculating the average crime count for districts after 1997, not specifically in 1995 as requested. We need to add a condition to filter crimes in 1995."
+1254,False,moderate,True,The query incorrectly filters for dates after '1990' by only considering the year. It needs to compare against the whole date '1990/01/01'.
+609,True,simple,True,No changes needed. The query accurately returns the count of posts with a score of 10.
+823,True,moderate,True,No changes needed. The query is accurate.
+467,True,simple,True,The query accurately returns the number of cards in the base set of 'Hauptset Zehnte Edition'. No changes are needed.
+489,True,simple,True,No changes needed. The query is accurate.
+1133,False,simple,True,"The query returns players with a first name starting with 'Aaron' instead of only those named 'Aaron'. Additionally, it doesn't account for birth year being after 1999, not after 1990."
+535,True,simple,True,"The query accurately selects the count of user IDs from the 'users' table where the 'Upvotes' are greater than 100 and 'Downvotes' are greater than 1, correctly answering the original question."
+1019,False,moderate,True,"The query returned a single numerical result, however, the question asks for the average lap time. The query needs to select the AVG aggregate function instead of performing a sum and division operation."
+1154,False,simple,True,"The query returned a result, but the database does not contain information on patient ID. Try to query using other information provided in the question like birthday, sex and symptoms."
+54,True,simple,True,No changes needed. The query is accurate.
+53,False,simple,True,"While the query correctly joins the tables and filters by 'Fresno', it returns a list of individual 'NumTstTakr' values instead of the total count.  We need to use SUM() to get the total number of test takers."
+34,True,moderate,True,The query is correct. It accurately calculates the free rate by dividing the count of free meals by the total enrollment for students aged 5-17 at the school run by Kacey Gibson.
+904,True,moderate,True,"The query is correct. It joins the relevant tables, filters by the driver's name, orders the results by lap time, and limits to the top result to get the fastest lap."
+542,True,simple,True,No changes needed. The query is accurate.
+1341,True,simple,True,No changes needed. The query is accurate.
+279,True,simple,True,No changes needed. The query is accurate.
+491,True,simple,True,No changes needed. The query is accurate.
+1314,True,simple,True,The query accurately returns the first and last names of students in the Student_Club associated with the 'Art and Design Department'.
+1161,True,challenging,True,"The query correctly joins the Patient and Examination tables, filters for in-patients aged 50 and above, and calculates the average anti-cardiolipin antibody (IgG) concentration. No changes are needed."
+268,False,challenging,False,LLM Failure
+841,True,simple,True,The query accurately joins the 'superhero' and 'race' tables based on the race ID and retrieves the weight and race of the superhero with an ID of 40.
+1102,True,moderate,True,"The query is correct. It correctly joins the tables, filters the results based on the date and overall rating, orders the players by birthdate in ascending order, and limits the result to the oldest player."
+847,True,simple,True,No changes needed. The query is accurate.
+1300,True,moderate,True,"The query is correct. It correctly joins the tables, filters the data and returns the Diagnosis with the highest TG within the normal range."
+1120,False,moderate,True,"The query incorrectly joins player information with match data, potentially leading to inaccurate sum. It needs to filter on all away player columns (away_player_1 to away_player_11) and then group by player name to sum their goals."
+1441,True,moderate,True,The query accurately joins the tables and applies the filters to return the count of members who have an Education major and are part of the College of Education & Human Services. 
+920,True,simple,True,No changes needed. The query is accurate.
+648,True,simple,True,The query accurately retrieves the display names and website URLs of users associated with posts that have a favorite count greater than 150.
+113,True,simple,True,"The query is correct. It joins the necessary tables, filters by loan date and amount to identify the specific client, and retrieves the birth date."
+686,False,simple,True,The query returns all the post Ids with views above average while the question asks for just the total number of these posts. Update the query to count the post Ids instead of returning all of them.
+1405,True,moderate,True,"No changes needed. The query accurately retrieves the budgeted categories and their amounts for the 'April Speaker' event, sorts them in ascending order, and presents the result as requested."
+883,False,simple,True,"The query returned a list of race names, but the original question also asked for the total number of races. The query should be modified to return both the count and the list of names in descending order."
+789,True,simple,True,"The query is correct. It joins the tables correctly, filters for alien heroes, and accurately calculates the average weight."
+347,False,moderate,True,"The query returned results only for artist name as ""Stephen Daniele"" but the question asked for ""Stephen Daniel"". Also, the query does not consider describing missing or degraded properties."
+1211,False,moderate,True,"The query is almost correct, however, the question asks for the age which should be calculated by subtracting the birth year from the current year. Additionally, it needs to consider the normal range and calculate the index based on that. Assuming the normal range for LDH is 120-250, the index can be calculated as (LDH - 250) * 100 / (250-120)."
+1115,False,challenging,True,The query attempts to calculate the percentage difference but does not consider that players might have multiple entries in the Player_Attributes table. We need to group by player name before calculating the percentage difference.
+1045,True,simple,True,No changes needed. The query is accurate.
+227,True,simple,True,"The query accurately calculates the percentage of carcinogenic molecules, rounds it to three decimal places, and presents it correctly."
+1379,True,simple,True,No changes needed. The query is accurate.
+717,True,simple,True,No changes needed. The query is accurate.
+1495,True,simple,True,"The query accurately retrieves the client ID with the highest consumption in September 2013 by joining the 'customers' and 'yearmonth' tables, filtering by the target date, aggregating consumption by customer, ordering in descending order, and limiting to the top result. No changes needed."
+1131,False,simple,True,"While the query returns a numerical value, it is not the average height of Italy players. The query joins Player with Match, leading to duplicate Player entries and thus an incorrect average. It should instead directly calculate from the Player table."
+1124,False,moderate,False,LLM Failure
+692,False,moderate,True,"The query returns a single day difference between badge granting and account creation. It should count the difference between account creation and badge earning, considering there might not be a badge awarded for each user."
+1459,True,simple,True,The query accurately returns the major and department of Garrett Gerke. No changes needed.
+452,True,simple,True,No changes needed. The query is accurate.
+916,True,simple,True,No changes needed. The query is accurate.
+66,True,simple,True,"No changes needed. The query accurately filters by date range, county, and funding type to answer the question."
+442,True,simple,True,The query correctly returns the base set size and set code for sets appearing in both the Masques and Mirage blocks. 
+427,True,moderate,True,The query returned the expected languages based on the provided information.
+1044,True,simple,True,The query accurately selects players with a birthyear of 1970 and birthmonth of October using string manipulation on the birthday column.
+549,True,simple,True,No changes needed. The query accurately joins the tables and returns the body of the post associated with the tag 'bayesian'.
+1386,True,simple,True,No changes needed. The query is accurate.
+938,False,moderate,True,"The query returned Lewis Hamilton as the winner, but he did not win the 2008 Australian Grand Prix. The results column includes more than the winner, to get the winner only filter by position = 1."
+1357,True,simple,True,No changes needed. The query is accurate.
+477,True,challenging,True,"The query correctly returns the artists from the provided list who designed a card in the Coldsnap set. The use of OR statements within the WHERE clause is not the most concise way to achieve this, but it does produce the correct result."
+713,True,simple,True,No changes needed. The query is accurate.
+1458,False,moderate,True,The query does not calculate the difference in the percentage of members correctly. It needs to calculate the percentage of members in each state separately before taking the difference. 
+784,True,simple,True,The query accurately returns the full names of vampire heroes from the superhero database.
+342,False,simple,True,"The query returns the card with the lowest converted mana cost due to the ASC order.  It should order by mana cost in DESC order.  Additionally, it should filter by cards where the converted mana cost is greater than the face converted mana cost."
+204,True,simple,True,No changes needed. The query is accurate.
+458,True,simple,True,"The query accurately counts the artists who designed cards matching the criteria by using a conditional count. The WHERE clause is not needed in this instance, making the query efficient."
+615,True,moderate,True,The query is correct. It accurately calculates the percentage of users with the 'Organizer' badge who are teenagers by dividing the number of teenage organizers by the total number of organizers.
+295,False,simple,False,LLM Failure
+414,False,simple,True,"The query returns a list of all languages that any set from the Ravnica block was translated to, not just the set with 180 cards. The query needs to specify that it should only consider the set with 180 cards within the Ravnica block."
+1236,False,challenging,True,"The query is not fully accurate. There's no information available about red blood cell count in the database. The current query returns all female patients above 50 regardless of their red blood cell count. You could update the query to include other relevant factors if available. Also, it appears the database stores birthdays, not ages, so we need to calculate the age and use that in our filter. Lastly, let's make it clear we're returning the patient's ID and whether or not they were admitted."
+935,False,simple,True,"The query incorrectly uses 'time' column to filter for drivers who finished the race. It should use `statusId` column instead, and check if its value is equal to 1, which represents that the driver has finished the race."
+776,False,simple,True,"The query returned a hyphen for the race, indicating a potential issue with joining on race_id. Instead of joining on race_id, we should use the race field directly from the superhero table."
+817,False,moderate,True,"The query is returning the races of all blue-haired male characters, not just superheroes. Add a filter on the 'superhero' table to only include superheroes (e.g., where T1.is_superhero = 1)."
+353,True,simple,True,No changes needed. The query is accurate.
+1062,True,moderate,True,No changes needed. The query is accurate.
+1501,False,moderate,True,"The query joins the tables based on unrelated columns 'CustomerID', leading to an incorrect result. It should join 'transactions_1k' and 'yearmonth' on 'TransactionID'."
+159,False,simple,True,"The query returns transaction IDs, it should return amount of withdrawals. Try to change SELECT statement."
+435,False,simple,True,"The query returns all card ids with black borders, but it doesn't answer how many there are. We need to use COUNT() instead of listing all ids."
+892,True,moderate,True,The query is correct. It joins the relevant tables and uses ORDER BY and LIMIT to find the driver with the most points.
+748,True,simple,True,No changes needed. The query is accurate.
+192,False,moderate,True,"The query returns the average amount of all loans with status 'C' or 'D' for accounts with a specific frequency. However, the question asks for the average loan amount for loans that are still running and have statements issued after each transaction. Further filtering on loan status and potentially joining with a transaction/statement table is needed to meet all criteria."
+678,True,simple,True,No changes needed. The query is accurate.
+1224,True,simple,True,"The query accurately retrieves the patient details with the highest total bilirubin level, ordering by total bilirubin in descending order and limiting the result to the top entry."
+1177,False,simple,True,"Although the query returned a result, it does not consider the actual T-CHO value for the patient. It only checked if any T-CHO value for that patient is less than 250. The query needs to filter by the date 1995-09-04 and then check if the T-CHO value on that date is less than 250."
+31,True,moderate,True,The query is correct. It accurately calculates the eligible free rate by dividing the 'Free Meal Count (K-12)' by the 'Enrollment (K-12)' and then uses LIMIT to retrieve the rates for the 10th and 11th schools with the highest enrollment.
+512,False,simple,True,"The query incorrectly handles the 'OR' condition, counting cards where either power is '*' or power IS NULL, not exclusively cards with unknown power that are not foil. "
+202,True,simple,True,No changes needed. The query is accurate.
+1226,True,simple,True,"The query is correct. It correctly joins the Patient and Laboratory tables, sorts by T-CHO in descending order and birthday in ascending order to retrieve the patient ID and T-CHO index of the oldest patient with the highest total cholesterol."
+893,True,simple,True,No changes needed. The query is accurate.
+579,True,simple,True,The query correctly returns all comments associated with the specified post. No changes are necessary.
+879,True,moderate,True,"The query is correct. It correctly joins the 'drivers' and 'results' tables on driverId, sorts the results in descending order based on 'fastestLapSpeed', and returns the nationality of the driver with the highest speed."
+948,True,simple,True,The query accurately returns the maximum points earned by a British constructor in the Formula 1 database.
