@@ -1,6 +1,7 @@
 # Distribution of work
 Team members:
 - Adrian Hagen, ILIAS: adhagen, matriculation number: S2115311
+- Maximilian Abrams, ILIAS: mabrams, matriculation number: S2117897
 
 ### Developing an agentic approach and architecture for the agentic approach
 - adhagen
@@ -21,11 +22,14 @@ Team members:
 ### Evaluation of approaches
 - adhagen
 
-### Creating a baseline
+### Develop the baseline approach and implement it
+- mabrams
 
 ### Creating various templates for different prompting techniques
 - adhagen
 
 ### Research of related work
+- mabrams
 
 ### PowerPoint Presentation
+- mabrams
