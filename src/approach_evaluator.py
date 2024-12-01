@@ -112,7 +112,7 @@ class ApproachEvaluator:
             self.question_ids, self.input_texts, self.target_queries
         ):
             predicted_query, database, feedbacks, errors, run_status = self.approach(
-                input_text, target_query, database, feedbacks
+                input_text
             )
             is_correct = [
                 1 if evaluation_function(database, predicted_query, target_query) else 0

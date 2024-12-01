@@ -8,9 +8,11 @@ from dotenv import load_dotenv
 from feedback_agent import FeedbackAgent
 from fixer_agent import FixerAgent
 from gen_ai_hub.proxy.core.proxy_clients import get_proxy_client
+
+from gen_ai_hub.proxy.langchain.openai import ChatOpenAI
+from gen_ai_hub.proxy.langchain.google_vertexai import ChatVertexAI
+
 from langchain.prompts import PromptTemplate
-from langchain_google_vertexai import ChatVertexAI
-from langchain_openai import ChatOpenAI
 from langgraph.graph import END, START, StateGraph
 from state_types import State
 
@@ -31,6 +33,7 @@ llm_gpt = ChatOpenAI(
 llm_gemini = ChatVertexAI(
     proxy_model_name="gemini-1.5-pro",
     proxy_client=get_proxy_client("gen-ai-hub"),
+    temperature=0,
 )
 
 
@@ -149,7 +152,7 @@ def get_table_column_names_descriptions(state: State):
 
 
 def create_sql_query(state: State):
-    return create_sql_query_creator(state, llm=llm_gpt)
+    return create_sql_query_creator(state, llm=llm_gemini)
 
 
 def validate_sql_query_syntax(state: State):
@@ -167,13 +170,13 @@ def validate_sql_query(state: State):
 
 
 def fix_sql_query(state: State):
-    fixer_agent = FixerAgent(llm_gpt)
+    fixer_agent = FixerAgent(llm_gemini)
     fixer_agent.analyse_incorrect_query(state)
     return state
 
 
-def feedback_sql_query(state: State, llm):
-    feedback_agent = FeedbackAgent()
+def feedback_sql_query(state: State):
+    feedback_agent = FeedbackAgent(llm_gemini)
     feedback_agent.evaluate_query(state)
     return state
 
@@ -249,7 +252,7 @@ def stream_graph_updates(user_input: str):
 
 def create_sql_from_natural_text(
     natural_text: str,
-    max_iterations: int = 20,
+    max_iterations: int = 25,
 ):
     """
     Converts natural language text into an SQL query with support for multiple inputs.
