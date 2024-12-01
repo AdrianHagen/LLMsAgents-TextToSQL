@@ -2,6 +2,8 @@
 Team members:
 - Adrian Hagen, ILIAS: adhagen, matriculation number: S2115311
 - Maximilian Abrams, ILIAS: mabrams, matriculation number: S2117897
+- Yannik Hahn,
+- Patricia Paskuda, ILIAS: ppaskuda, matriculation number: 2119717
 
 ### Developing an agentic approach and architecture for the agentic approach
 - adhagen
