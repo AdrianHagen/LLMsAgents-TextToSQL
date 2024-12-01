@@ -212,6 +212,7 @@ class ApproachEvaluator:
             bool: A boolean value indicating whether the query results are the same.
         """
         try:
+            db = Database(database)
             predicted_result, _ = db.execute_query(predicted_query)
             target_result, _ = db.execute_query(target_query)
             print(

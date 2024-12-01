@@ -18,7 +18,7 @@ load_dotenv()
 
 
 graph_builder = StateGraph(State)
-llm = ChatOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+llm = ChatOpenAI(api_key=os.getenv("OPENAI_API_KEY"), temperature=0)
 
 
 def retrieve_database_names():
