@@ -1,5 +1,5 @@
 from langchain_community.utilities.sql_database import SQLDatabase
-from langchain_ollama.llms import OllamaLLM
+from langchain_ollama import ChatOllama
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_core.messages import SystemMessage
 from langgraph.prebuilt import create_react_agent
@@ -13,8 +13,8 @@ class SQLAgent:
     def __init__(self, database: Database):
         self.database = database
         self.db_path = database.get_db_path()
-        self.llm = ChatOpenAI(model="gpt-4o", temperature=0.5)
-        #self.llm = OllamaLLM(model="mistral")
+        self.llm = ChatOpenAI(model="gpt-3.5-turbo", temperature="0")
+        #self.llm = ChatOllama(model="mistral", temperature="0")
         self.agent_executor = None
         self.initialize_agent()
 

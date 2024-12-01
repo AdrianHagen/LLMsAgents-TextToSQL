@@ -1,0 +1,450 @@
+question_id,database,is_correct,difficulty,generated_query,feedback,execution_time,ground_truth_results,generated_results
+479,card_games,False,moderate,"SELECT COUNT(*) as count_unknown_power
+    FROM cards
+    WHERE set = 'Coldsnap' AND converted_mana_cost > 5 AND power IS NULL;","Error executing query: near ""set"": syntax error",,,
+1057,european_football_2,False,moderate,"sql_db_list_tables
+    sql_db_schema 'matches'
+    SELECT AVG(home_team_goals) as avg_goal
+    FROM matches
+    WHERE season = 2010 AND country = 'Poland' AND home_team IS NOT NULL;","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1367,student_club,False,simple,"sql_db_list_tables
+    table_name := (result from sql_db_list_tables)
+    sql_db_schema ""{$table_name}""
+    table_fields := (results from sql_db_schema ""{$table_name}"")
+    college_field, member_field := (split the table_fields by ',')
+    sql_query := ""SELECT {college_field} FROM {table_name} GROUP BY {college_field} ORDER BY COUNT({member_field}) DESC LIMIT 1""
+    sql_db_query_checker ""{sql_query}""
+    sql_query","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+298,toxicology,False,moderate,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+651,codebase_community,False,simple,SELECT name FROM sqlite_master WHERE type='table';,Query results mismatch,8.091601193882525e-05,"[('Time series for count data, with counts < 20',)]","[('badges',), ('comments',), ('postHistory',), ('postLinks',), ('posts',), ('tags',), ('users',), ('votes',)]"
+1145,european_football_2,False,simple,SELECT name FROM sqlite_master WHERE type='table';,Query results mismatch,8.13750084489584e-05,"[('Spain LIGA BBVA',), ('Italy Serie A',), ('France Ligue 1',), ('England Premier League',)]","[('sqlite_sequence',), ('Player_Attributes',), ('Player',), ('League',), ('Country',), ('Team',), ('Team_Attributes',), ('Match',)]"
+1165,thrombosis_prediction,False,moderate,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+494,card_games,False,challenging,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1126,european_football_2,False,simple,"sql_db_list_tables
+
+    (Assuming that the list of tables contains 'players')
+
+    sql_db_schema 'players'
+
+    SELECT name FROM players WHERE country = 'Belgium';","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1292,thrombosis_prediction,False,challenging,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+9,california_schools,False,simple,"-- List all tables in the database
+SELECT name FROM sqlite_master WHERE type='table';",Invalid query generated,,,
+152,financial,False,moderate,SELECT name FROM sqlite_master WHERE type='table';,Query results mismatch,2.4542008759453893e-05,"[(29670.44951923077,)]","[('account',), ('card',), ('client',), ('disp',), ('district',), ('loan',), ('order',), ('trans',)]"
+1254,thrombosis_prediction,False,moderate,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+609,codebase_community,True,simple,SELECT COUNT(*) FROM posts WHERE score = 10;,Query executed successfully,0.02889825002057478,"[(741,)]","[(741,)]"
+823,superhero,False,moderate,"sql_db_list_tables
+    sql_db_schema 'table_name'
+    SELECT COUNT(*) FROM table_name WHERE gender = 'female' AND character_type = 'superhero' AND universe = 'Marvel Comics';","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+467,card_games,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+489,card_games,False,simple,"SELECT table_name FROM sqlite_master WHERE type='table' AND name IN (
+    SELECT table_name FROM sqlite_master WHERE type='table'
+);
+
+-- After identifying the tables, query their schema to find the relevant one.
+SELECT * FROM sql_db_schema('<TABLE NAME FROM PREVIOUS QUERY>');
+
+-- Finally, filter the results to get the rows where the code column equals 'PKHC'.
+SELECT * FROM <TABLE NAME FROM PREVIOUS QUERY> WHERE code = 'PKHC';",Invalid query generated,,,
+1133,european_football_2,False,simple,"sql_db_list_tables
+    sql_db_schema 'football_players'
+    sql_db_query 'SELECT COUNT(*) FROM football_players WHERE birthdate > '1990-01-01' AND firstname = ""Aaron"";","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+535,codebase_community,True,simple,"SELECT COUNT(*) FROM Users
+    WHERE upvotes > 100 AND downvotes > 1;",Query executed successfully,0.004036083002574742,"[(207,)]","[(207,)]"
+1019,formula_1,False,moderate,"sql_db_list_tables
+    sql_db_schema 'table_name'
+    SELECT AVG(lap_time) as avg_lap_time
+    FROM table_name
+    WHERE country = 'Italy';","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1154,thrombosis_prediction,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+54,california_schools,False,simple,"WITH school_admin AS (
+    SELECT school_id, admin_id FROM SchoolAdmin WHERE admin_id = (SELECT id FROM Admins WHERE first_name = 'Avetik' AND last_name = 'Atoian')
+)
+
+SELECT s.school_name, s.zip_code
+FROM Schools AS s
+JOIN school_admin ON s.id = school_admin.school_id;",Error executing query: no such table: SchoolAdmin,,,
+53,california_schools,False,simple,"SELECT COUNT(*) FROM students
+    WHERE mailing_city = 'Fresno';",Error executing query: no such table: students,,,
+34,california_schools,False,moderate,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+904,formula_1,False,moderate,"sql_db_list_tables
+    sql_db_schema 'races, drivers'
+    SELECT race_year, race FROM races
+        INNER JOIN (SELECT driver_id, fastest_lap_race_id as race, fastest_lap_race_year as year FROM drivers WHERE driver_name = 'Michael Schumacher') AS fastest_laps
+        ON races.race_id = fastest_laps.race
+    ORDER BY race_year DESC, race DESC
+    LIMIT 1;","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+542,codebase_community,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1341,student_club,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+279,toxicology,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+491,card_games,False,simple,"WITH release_date AS (
+    SELECT card_set, MIN(release_date) as min_release_date
+    FROM MagicCards
+    GROUP BY card_set
+), card_sets AS (
+    SELECT * FROM release_date
+)
+SELECT card_set
+FROM card_sets
+WHERE min_release_date = '2017-06-09';",Error executing query: no such table: MagicCards,,,
+1314,student_club,False,simple,"SELECT name FROM Student_Club
+    INNER JOIN Department ON Student_Club.DepartmentID = Department.DepartmentID
+    WHERE Department.DepartmentName = 'Art and Design';",Error executing query: no such table: Student_Club,,,
+1161,thrombosis_prediction,False,challenging,SELECT name FROM sqlite_master WHERE type='table';,Query results mismatch,0.0002827499993145466,"[(6.120833333333334,)]","[('Examination',), ('Patient',), ('Laboratory',)]"
+268,toxicology,False,challenging,sql_db_list_tables,"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+841,superhero,False,simple,"sql_db_list_tables
+    sql_db_schema 'superheroes'
+    SELECT weight, race FROM superheroes WHERE id = 40;","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1102,european_football_2,False,moderate,"sql_db_list_tables("""") -- List all tables in the database
+
+    let table = <Name of the table containing player data>
+
+    sql_db_schema(""$table"") -- Get schema of the selected table
+
+    let birthdate_column = <Column name for the player's birthdate>
+    let overall_rating_column = <Column name for the player's overall rating>
+    let date_column = <Column name for the date of the overall rating>
+
+    SELECT name, $birthdate_column FROM $table WHERE $overall_rating_column = 77 AND $date_column = '2016-06-23' ORDER BY $birthdate_column DESC LIMIT 1;",Invalid query generated,,,
+847,formula_1,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1300,thrombosis_prediction,False,moderate,SELECT name FROM sqlite_master WHERE type='table';,Query results mismatch,1.6166013665497303e-05,"[('SLE',)]","[('Examination',), ('Patient',), ('Laboratory',)]"
+1120,european_football_2,False,moderate,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1441,student_club,False,moderate,"SELECT COUNT(*) FROM Members
+    WHERE education_major IN ('College of Education & Human Services');",Error executing query: no such table: Members,,,
+920,formula_1,False,simple,"SELECT DISTINCT year FROM Race
+JOIN Circuit ON Race.circuit_id = Circuit.circuit_id
+WHERE Circuit.name = 'Silverstone Circuit' AND Series_Name = 'Formula 1';",Error executing query: no such table: Race,,,
+648,codebase_community,False,simple,"SELECT display_name, url, favorite_count
+FROM posts
+WHERE favorite_count > 150
+ORDER BY favorite_count DESC;",Error executing query: no such column: display_name,,,
+113,financial,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+686,codebase_community,False,simple,"sql_db_list_tables("""")","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1405,student_club,False,moderate,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+883,formula_1,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+789,superhero,False,simple,"sql_db_list_tables
+    sql_db_schema 'heroes'
+
+    SELECT AVG(weight) as avg_weight
+    FROM heroes
+    WHERE species = 'alien';","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+347,card_games,False,moderate,"sql_db_list_tables("""")","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1211,thrombosis_prediction,False,moderate,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1115,european_football_2,False,challenging,"# First, check the tables in the database
+SELECT name FROM sqlite_master WHERE type='table';
+
+# Let's assume the table name is 'soccer_players'
+
+# Next, query the schema of the soccer_players table
+PRAGMA table_info(soccer_players);
+
+# Based on the schema information, construct a SQL query to compare Landon Donovan and Jordan Bowery's overall ratings on 2013/7/12
+SELECT AVG(overall_rating) as avg_rating
+FROM soccer_players
+WHERE name IN ('Landon Donovan', 'Jordan Bowery') AND date = '2013-07-12';","Error executing query: unrecognized token: ""#""",,,
+1045,european_football_2,False,simple,"sql_db_list_tables("""")
+    table_names = (<result from sql_db_list_tables>);
+    if ""matches"" not in table_names:
+        return ""The 'matches' table does not exist. Please check the table names and try again."";
+
+    sql_db_schema(""matches"");
+    schema = (<result from sql_db_schema>);
+    columns = schema.split("", "");
+
+    if ""attacking_work_rate"" not in [column for column in columns]:
+        return ""The 'attacking_work_rate' column does not exist in the 'matches' table. Please check the column names and try again."";
+
+    query = f""SELECT attacking_work_rate FROM matches WHERE player='Franco Zennaro';"";
+    (<result from sql_db_query>);","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+227,toxicology,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1379,student_club,False,simple,"sql_db_list_tables """"
+    (SELECT table_name FROM sql_db_list_tables """") AS t
+    WHERE t.table_name IN ('events')
+    sql_db_schema 'events'
+    SELECT COUNT(*), year(event_date) as event_year
+    FROM events
+    WHERE event_year = 2020
+    GROUP BY event_year","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+717,superhero,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1495,debit_card_specializing,False,simple,"sql_db_list_tables
+    sql_db_schema 'table_name'
+    SELECT client_id, SUM(amount) as total_consumed
+    FROM table_name
+    WHERE month = 'September' AND year = 2013
+    GROUP BY client_id
+    ORDER BY total_consumed DESC
+    LIMIT 1;","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1131,european_football_2,False,simple,"sql_db_list_tables
+
+    (Assuming 'players' and 'countries' are found)
+
+    sql_db_schema 'players, countries'
+
+    (Assuming columns 'height', 'country_id', 'player_id' in the players table and 'name', 'id' in the countries table)
+
+    SELECT AVG(height) as average_height
+    FROM players
+    INNER JOIN countries ON players.country_id = countries.id
+    WHERE countries.name = 'Italy';","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1124,european_football_2,False,moderate,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+692,codebase_community,False,moderate,"sql_db_list_tables("""");
+    table_names = (SELECT table_name FROM sqlite_master WHERE type='table');
+    relevant_table = """";
+    FOR i IN 1:(SELECT COUNT(*) FROM sqlite_master WHERE type='table') {
+        IF (PRAGMA TABLE_INFO(table_names[i])['name'] LIKE '%users%' AND PRAGMA TABLE_INFO(table_names[i])['name'] NOT LIKE '%temp%') THEN
+            relevant_table = table_names[i];
+            break;
+        END IF;
+    }
+
+    sql_db_schema("""" + relevant_table);
+    user_id_column = (SELECT column_name FROM pragma_table_info(relevant_table) WHERE name='display_name' AND type='integer');
+    account_created_column = (SELECT column_name FROM pragma_table_info(relevant_table) WHERE name='account_created' AND type='text');
+    badge_column = (SELECT column_name FROM pragma_table_info(relevant_table) WHERE name='badge_earned' AND type='integer');
+
+    query = ""SELECT account_created, badge_earned FROM "" + relevant_table + "" WHERE display_name='Zolomon';"";
+    sql_db_query(query);
+
+    IF (COUNT(*) > 0) THEN
+        date_diff_sql = ""SELECT julianday('now') - julianday(account_created) FROM "" + relevant_table + "" WHERE display_name='Zolomon';"";
+        days_since_creation = sql_db_query(date_diff_sql);
+        days_since_creation = (SELECT substr(days_since_creation, 1, length(days_since_creation)-3) FROM sqlite_master WHERE name='temp_table');
+    END IF;
+
+    IF (COUNT(*) > 0) THEN
+        RETURN ""The user 'Zolomon' got the badge on day "" + days_since_creation + "" since his account was created."";
+    ELSE
+        RETURN ""No data found for user 'Zolomon'."";
+    END IF;","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1459,student_club,False,simple,"sql_db_list_tables('') -- List all tables in the database
+
+    let table_names = (result from sql_db_list_tables('')) -- Store the list of tables in a variable
+
+    if table_names contains 'students' then -- Check if students table exists
+        sql_db_schema(table_names[indexOf(table_names, 'students')]) -- Get schema for students table
+
+        let student_query = ""SELECT major, department FROM students WHERE name='Garrett Gerke'"" -- Construct SQL query to get the required data
+        sql_db_query(student_query) -- Execute the constructed SQL query",Invalid query generated,,,
+452,card_games,False,simple,SELECT name FROM cards WHERE has_textbox = 1;,Error executing query: no such column: has_textbox,,,
+916,formula_1,False,simple,"sql_db_list_tables
+    sql_db_schema 'table_name'
+    SELECT surname FROM table_name WHERE nationality = 'Italian';","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+66,california_schools,False,simple,SELECT name FROM sqlite_master WHERE type='table';,Query results mismatch,5.2709016017615795e-05,"[(7,)]","[('frpm',), ('satscores',), ('schools',)]"
+442,card_games,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+427,card_games,False,moderate,"-- First, list all tables to see what we have
+SELECT name FROM sqlite_master WHERE type='table';
+
+-- Next, check the schema of the table that seems relevant for our question (e.g. 'cards')
+SELECT * FROM cards;
+
+-- Finally, construct a query to get the required information from the table
+SELECT name FROM cards WHERE set_code = 'ARC' AND type = 'Language';",Invalid query generated,,,
+1044,european_football_2,False,simple,"SELECT * FROM Players
+    WHERE birthyear = 1970 AND birthmonth = 'October';",Error executing query: no such table: Players,,,
+549,codebase_community,False,simple,"-- List all tables in the database
+sql_db_list_tables ''
+
+-- Query the schema of the table containing posts
+sql_db_schema 'posts'
+
+-- Construct a SQL query to fetch the body of the post with the ""bayesian"" tag
+SELECT body FROM posts WHERE tag = 'bayesian';",Invalid query generated,,,
+1386,student_club,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+938,formula_1,False,moderate,"SELECT Champion, wiki_url
+    FROM Formula1_Race
+    WHERE Year = 2008 AND RaceName = 'Australian Grand Prix';
+
+    -- First, check the tables in the database:
+    sql_db_list_tables ''
+
+    -- Then, get the schema of the relevant table:
+    sql_db_schema 'Formula1_Race'",Invalid query generated,,,
+1357,student_club,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+477,card_games,False,challenging,"# First, let's check the list of tables in the database:
+sql_db_list_tables """"
+
+# If the table 'magicsetartist' exists, we can proceed to query its schema:
+sql_db_schema ""magicsetartist""
+
+# Now that we have the schema information, let's construct an SQL query to find the artists who have designed a card in the set Coldsnap:
+SELECT artist FROM magicsetartist WHERE set = 'Coldsnap';","Error executing query: unrecognized token: ""#""",,,
+713,codebase_community,False,simple,"sql_db_list_tables("""")","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1458,student_club,False,moderate,"WITH member_counts AS (
+    SELECT COUNT(*) as member_count, state
+    FROM members
+    GROUP BY state
+),
+percentage_nj AS (
+    SELECT (member_count / (SELECT SUM(member_count) FROM member_counts)) * 100 as percentage_nj
+    FROM member_counts
+    WHERE state = 'New Jersey'
+),
+percentage_vt AS (
+    SELECT (member_count / (SELECT SUM(member_count) FROM member_counts)) * 100 as percentage_vt
+    FROM member_counts
+    WHERE state = 'Vermont'
+),
+difference AS (
+    SELECT percentage_nj - percentage_vt as difference
+    FROM percentage_nj, percentage_vt
+)
+SELECT difference
+FROM difference;",Error executing query: no such table: members,,,
+784,superhero,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+342,card_games,False,simple,"sql_db_list_tables
+
+    (Assuming table_names contains 'cards')
+
+    sql_db_schema 'cards'
+
+    (Assuming columns are 'name', 'mana_cost')
+
+    SELECT name FROM cards WHERE mana_cost > (SELECT MAX(mana_cost) FROM cards);","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+204,toxicology,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+458,card_games,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+615,codebase_community,False,moderate,"WITH organizer_users AS (
+    SELECT user_id FROM Users WHERE badge = 'Organizer'
+),
+teenager_users AS (
+    SELECT user_id FROM Users WHERE age BETWEEN 13 AND 19
+)
+SELECT
+    ROUND(COUNT(user_id) * 100.0 / (SELECT COUNT(user_id) FROM organizer_users), 2) AS percentage
+FROM teenager_users
+WHERE user_id IN (SELECT user_id FROM organizer_users);",Error executing query: no such column: user_id,,,
+295,toxicology,False,simple,SELECT name FROM sqlite_master WHERE type='table';,Query results mismatch,6.350001785904169e-05,"[(1569,)]","[('atom',), ('bond',), ('connected',), ('molecule',)]"
+414,card_games,False,simple,"sql_db_list_tables();
+    sql_db_schema('tables');
+
+    -- Assuming 'cards' table contains the information about the cards and 'language' column indicates the language of the card.
+    SELECT language FROM cards WHERE set = 'Ravnica';",Invalid query generated,,,
+1236,thrombosis_prediction,False,challenging,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+935,formula_1,False,simple,"sql_db_list_tables
+    sql_db_schema 'race, driver'
+    SELECT COUNT(*) FROM driver
+    INNER JOIN result ON driver.id = result.driver_id
+    WHERE race_id = (SELECT id FROM race WHERE year = 2008 AND circuit = 'Australian Grand Prix') AND position >= 1;","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+776,superhero,False,simple,"sql_db_list_tables("""");
+    table_names = (result from sql_db_list_tables """");
+    if (table_names contains ""characters"") then
+        sql_db_schema(""characters"");
+        character_schema = (result from sql_db_schema ""characters"");
+        character_fields = split(character_schema, ',');
+        for field in character_fields loop
+            if (field contains 'name') then
+                name_field = field;
+            end if;
+            if (field contains 'race') then
+                race_field = field;
+            end if;
+        end loop;
+        query = ""SELECT "" + name_field + "", "" + race_field + "" FROM characters WHERE name = 'Charles Chandler'"";
+        result = (result from sql_db_query query);
+    end if;","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+817,superhero,False,moderate,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+353,card_games,False,simple,"-- First, list all the tables in the database to see what we can query.
+    sql_db_list_tables 'SELECT name FROM sqlite_master WHERE type='table';
+
+    -- Next, find the table that contains the information about Magic: The Gathering sets and their cards.
+    sql_db_schema 'sets';
+
+    -- Now, query the schema of the 'sets' table to get the columns we need.
+    sql_db_schema 'sets';
+
+    -- Finally, construct a SQL query that returns the set name and total number of cards for each set in Italian translation.
+    SELECT name AS ""Set Name"", COUNT(*) AS ""Total Cards"" FROM sets WHERE language='Italian' GROUP BY name;",Invalid query generated,,,
+1062,european_football_2,False,moderate,"SELECT name
+    FROM Players
+    WHERE year BETWEEN 2008 AND 2010 AND overall_rating > 80;",Error executing query: no such table: Players,,,
+1501,debit_card_specializing,False,moderate,"sql_db_list_tables
+    sql_db_schema 'gas_stations, transactions'
+    SELECT country FROM gas_stations JOIN transactions ON gas_stations.id = transactions.gas_station_id WHERE transactions.transaction_date = '2013-06-01';","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+159,financial,False,simple,"SELECT * FROM Transactions
+    WHERE Client_ID = 3356 AND Transaction_Type = 'Cash' AND Transaction_Type IS NOT NULL AND Withdrawal IS NOT NULL;",Error executing query: no such table: Transactions,,,
+435,card_games,False,simple,"sql_db_list_tables
+    sql_db_schema 'table_name'
+    SELECT card_id FROM table_name WHERE border_color = 'black';","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+892,formula_1,False,moderate,"-- First, list all tables in the database
+    sql_db_list_tables '');
+
+    -- Based on the table names, find the table containing the scores and players information
+    sql_db_schema '<table_name_containing_scores>';
+
+    -- Query the schema to find the columns for points and player name
+    -- Assuming the columns are named 'points' and 'player_name', construct a query to get the top scorer
+    SELECT player_name, points FROM <table_name_containing_scores> ORDER BY points DESC LIMIT 1;",Invalid query generated,,,
+748,superhero,False,simple,"sql_db_list_tables
+    sql_db_schema 'table_name'
+    SELECT eye_color FROM table_name WHERE id = 75;","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+192,financial,False,moderate,"sql_db_list_tables """"","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+678,codebase_community,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1224,thrombosis_prediction,False,simple,"# List all tables in the database
+sql_db_list_tables """"
+
+# Query the schema of the table containing the total bilirubin levels
+sql_db_schema <table_name_containing_bilirubin>
+
+# Find the highest total bilirubin level recorded and the corresponding patient details
+SELECT id, sex, birthday, total_bilirubin
+FROM <table_name_containing_bilirubin>
+ORDER BY total_bilirubin DESC
+LIMIT 1;","Error executing query: unrecognized token: ""#""",,,
+1177,thrombosis_prediction,False,simple,"-- List tables in the database
+SELECT name FROM sqlite_master WHERE type='table';
+
+-- If necessary, get the schema for the relevant table(s)
+-- For example:
+-- SELECT * FROM sql_db_schema('patient_data');",Invalid query generated,,,
+31,california_schools,False,moderate,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+512,card_games,False,simple,"sql_db_list_tables("""")
+    sql_db_schema(<table_names_from_previous_step>)
+    SELECT COUNT(*) FROM <relevant_table> WHERE power IS NULL AND name LIKE '%duel%A' AND type LIKE '%card%' AND foil = 'no';","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+202,toxicology,False,simple,"sql_db_list_tables """"
+    table = (sql_db_list_tables """").split("", "")
+    if len(table) == 0:
+        return ""No tables found in the database.""
+
+    schema = sql_db_schema(', '.join(table))
+    relevant_table = None
+
+    for table_name, table_info in schema.items():
+        if 'triple type bond' in table_info['columns']:
+            relevant_table = table_name
+            break
+
+    if relevant_table is None:
+        return ""No tables with triple type bond column found.""
+
+    query = f""SELECT COUNT(*) FROM {relevant_table} WHERE bond_type='triple'""
+    result = sql_db_query(query)
+    print(f""{query}"")
+    return result","Error executing query: near ""sql_db_list_tables"": syntax error",,,
+1226,thrombosis_prediction,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+893,formula_1,False,simple,"sql_db_list_tables('') -- List all tables in the database
+
+    let table_names = (result from sql_db_list_tables('')) -- Store the list of tables in a variable
+
+    sql_db_schema(table_names) -- Get schema for relevant tables
+
+    let table_with_race_data = (result from sql_query 'SELECT * FROM table_name WHERE race_year = 2017 AND race_name = ""Chinese Grand Prix""') -- Filter the table with the correct race data
+
+    let driver_scores = (result from sql_query 'SELECT driver, SUM(points) as total_points FROM table_with_race_data GROUP BY driver ORDER BY total_points DESC LIMIT 3') -- Get top 3 drivers and their scores
+
+    driver_scores",Invalid query generated,,,
+579,codebase_community,False,simple,sql_db_list_tables(''),"Error executing query: near ""sql_db_list_tables"": syntax error",,,
+879,formula_1,False,moderate,"sql_db_list_tables("""") -- List all tables in the database
+
+    let table = ""race_results"" -- Assuming the relevant table is race_results
+    sql_db_schema(""$table"") -- Get schema of the race_results table
+
+    let fastest_driver_id = (sql_db_query(""SELECT driver_id FROM $table ORDER BY lap_time ASC LIMIT 1"")) -- Find the id of the driver with the fastest lap time
+
+    sql_db_query(""SELECT nationality FROM $table WHERE driver_id = '$fastest_driver_id'"") -- Get the nationality of the driver with the fastest lap time",Invalid query generated,,,
+948,formula_1,False,simple,"WITH constructor_points AS (
+    SELECT ConstructorName, SUM(Points) as TotalPoints
+    FROM Formula1
+    GROUP BY ConstructorName
+    ORDER BY TotalPoints DESC
+    LIMIT 1
+)
+SELECT * FROM constructor_points;",Error executing query: no such table: Formula1,,,
